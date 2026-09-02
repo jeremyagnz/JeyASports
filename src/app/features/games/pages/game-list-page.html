@@ -24,12 +24,20 @@
 } @else {
   <div class="games__list">
     @for (game of games(); track game.id) {
-      <article class="game-row" [class.game-row--final]="game.status === 'FINAL'">
+      <article
+        class="game-row"
+        [class.game-row--final]="game.status === 'FINAL'"
+        tabindex="0"
+        role="link"
+        (click)="openDetail(game)"
+        (keydown)="onRowKeydown($event, game)"
+        [attr.aria-label]="'Ver detalle de ' + facade.describe(game)"
+      >
         <div class="game-row__date">
           <span>{{ formatDate(game.date) }}</span>
           <span class="game-row__time">{{ game.time }}</span>
         </div>
-        <a class="game-row__match" [routerLink]="['/app/games', game.id]">
+        <a class="game-row__match" [routerLink]="['/app/games', game.id]" (click)="$event.stopPropagation()">
           {{ facade.describe(game) }}
         </a>
         <div class="game-row__score">
@@ -46,13 +54,14 @@
               matIconButton
               matTooltip="Registrar en vivo"
               [routerLink]="['/app/games', game.id, 'live']"
+              (click)="$event.stopPropagation()"
             >
               <mat-icon>play_circle</mat-icon>
             </a>
-            <button matIconButton matTooltip="Editar" (click)="actions.openEdit(game)">
+            <button matIconButton matTooltip="Editar"             (click)="$event.stopPropagation(); actions.openEdit(game)">
               <mat-icon>edit</mat-icon>
             </button>
-            <button matIconButton matTooltip="Eliminar" (click)="actions.confirmRemove(game)">
+            <button matIconButton matTooltip="Eliminar"             (click)="$event.stopPropagation(); actions.confirmRemove(game)">
               <mat-icon>delete</mat-icon>
             </button>
           }
