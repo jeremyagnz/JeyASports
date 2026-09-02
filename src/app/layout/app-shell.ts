@@ -21,7 +21,7 @@ interface NavItem {
 
 const NAV_ITEMS: readonly NavItem[] = [
   { path: '/app/dashboard', label: 'Panel', icon: 'space_dashboard' },
-  { path: '/app/players', label: 'Jugadoras', icon: 'groups' },
+  { path: '/app/players', label: 'Jugadores', icon: 'groups' },
   { path: '/app/stats', label: 'Estadísticas', icon: 'query_stats' },
   { path: '/app/leaders', label: 'Líderes', icon: 'leaderboard' },
   { path: '/app/schedule', label: 'Calendario', icon: 'calendar_month' },

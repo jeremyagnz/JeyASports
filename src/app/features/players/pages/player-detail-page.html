@@ -1,11 +1,11 @@
 @if (player(); as player) {
   <a matButton routerLink="/app/players" class="detail__back">
     <mat-icon>arrow_back</mat-icon>
-    Jugadoras
+    Jugadores
   </a>
 
   <header class="detail__hero">
-    <app-player-avatar [firstName]="player.firstName" [lastName]="player.lastName" [size]="88" />
+    <app-player-avatar [firstName]="player.firstName" [lastName]="player.lastName" [photoUrl]="player.photoUrl ?? ''" [size]="88" />
     <div class="detail__identity">
       <p class="detail__number">#{{ player.jerseyNumber }}</p>
       <h1>{{ player.firstName }} {{ player.lastName }}</h1>
@@ -67,5 +67,5 @@
     </mat-tab>
   </mat-tab-group>
 } @else {
-  <app-empty-state icon="person_off" title="Jugadora no encontrada" />
+  <app-empty-state icon="person_off" title="Jugador no encontrado" />
 }

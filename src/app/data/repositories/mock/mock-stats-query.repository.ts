@@ -98,6 +98,10 @@ export class MockStatsQueryRepository implements StatsQueryRepository {
     return simulate(() => this.scoped('pitchingStats', query));
   }
 
+  fieldingGameLog(query: Required<StatsQuery>): Observable<readonly FieldingStatLine[]> {
+    return simulate(() => this.scoped('fieldingStats', query));
+  }
+
   gameBoxScore(
     teamId: string,
     gameId: string,

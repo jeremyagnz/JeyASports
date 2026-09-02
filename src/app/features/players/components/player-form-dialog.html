@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ player ? 'Editar jugadora' : 'Nueva jugadora' }}</h2>
+<h2 mat-dialog-title>{{ player ? 'Editar jugador' : 'Nuevo jugador' }}</h2>
 <mat-dialog-content>
   <form [formGroup]="form" class="player-form">
     <mat-form-field appearance="outline">
@@ -88,6 +88,11 @@
       <mat-label>Biografía</mat-label>
       <textarea matInput rows="3" formControlName="bio"></textarea>
     </mat-form-field>
+
+    <label class="player-form__full player-form__file">
+      <span>Foto del jugador</span>
+      <input type="file" accept="image/*" (change)="onPhotoSelected($event)" />
+    </label>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

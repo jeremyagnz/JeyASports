@@ -32,6 +32,7 @@ export class TeamProfilePage {
     secondaryColor: ['#0b1622', Validators.required],
     regulationInnings: [7, [Validators.required, Validators.min(1), Validators.max(15)]],
     fieldersPerLineup: [10, [Validators.required, Validators.min(9), Validators.max(12)]],
+    logoUrl: [''],
   });
 
   constructor() {
@@ -51,6 +52,7 @@ export class TeamProfilePage {
         secondaryColor: team.secondaryColor,
         regulationInnings: team.regulationInnings,
         fieldersPerLineup: team.fieldersPerLineup,
+        logoUrl: team.logoUrl ?? '',
       });
     });
   }
@@ -66,10 +68,21 @@ export class TeamProfilePage {
         ...value,
         regulationInnings: Number(value.regulationInnings),
         fieldersPerLineup: Number(value.fieldersPerLineup),
+        logoUrl: value.logoUrl || undefined,
       })
       .subscribe({
         next: () => this.facade.notifySuccess('Perfil del equipo actualizado.'),
         error: (error: unknown) => this.facade.notifyError(error),
       });
+  }
+
+  onLogoSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file || !file.type.startsWith('image/')) {
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => this.form.controls.logoUrl.setValue(String(reader.result));
+    reader.readAsDataURL(file);
   }
 }

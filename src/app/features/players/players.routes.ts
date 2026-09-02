@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    title: 'Jugadoras | JeyA Sports',
+    title: 'Jugadores | JeyA Sports',
     loadComponent: () => import('./pages/player-list-page').then((m) => m.PlayerListPage),
   },
   {
@@ -13,7 +13,7 @@ export const routes: Routes = [
   },
   {
     path: ':id',
-    title: 'Perfil de jugadora | JeyA Sports',
+    title: 'Perfil de jugador | JeyA Sports',
     loadComponent: () => import('./pages/player-detail-page').then((m) => m.PlayerDetailPage),
   },
 ];

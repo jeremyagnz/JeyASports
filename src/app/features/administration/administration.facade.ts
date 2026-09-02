@@ -1,5 +1,5 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, switchMap, throwError } from 'rxjs';
 import { TeamContextService } from '../../core/context/team-context.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { TeamMembership, TeamRole, User } from '../../data/models';
@@ -46,6 +46,25 @@ export class AdministrationFacade {
 
   removeMember(membershipId: string): Observable<void> {
     return this.memberships.remove(membershipId);
+  }
+
+  addMember(displayName: string, email: string, role: TeamRole): Observable<TeamMembership> {
+    const teamId = this.teamContext.requireTeamId();
+    return this.users.findByEmail(email).pipe(
+      switchMap((existing) => existing
+        ? this.memberships.create({
+          userId: existing.id, teamId, role, status: 'ACTIVE', joinedAt: new Date().toISOString(),
+        })
+        : this.users.create({ displayName, email, avatarUrl: undefined }).pipe(
+          switchMap((user) => this.memberships.create({
+          userId: user.id,
+          teamId,
+          role,
+          status: 'ACTIVE',
+          joinedAt: new Date().toISOString(),
+          })),
+        )),
+    );
   }
 
   exportJson(): string {

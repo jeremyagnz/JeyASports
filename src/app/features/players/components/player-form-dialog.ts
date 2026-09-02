@@ -27,6 +27,9 @@ export type PlayerFormResult = Omit<CreateDto<Player>, 'teamId'>;
     .player-form__full {
       grid-column: 1 / -1;
     }
+    mat-form-field {
+      min-width: 0;
+    }
     @media (max-width: 600px) {
       .player-form {
         grid-template-columns: 1fr;
@@ -58,7 +61,18 @@ export class PlayerFormDialog {
     weightKg: [this.player?.weightKg ?? 65, [Validators.min(30), Validators.max(160)]],
     status: [this.player?.status ?? ('ACTIVE' as const), Validators.required],
     bio: [this.player?.bio ?? ''],
+    photoUrl: [this.player?.photoUrl ?? ''],
   });
+
+  onPhotoSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file || !file.type.startsWith('image/')) {
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => this.form.controls.photoUrl.setValue(String(reader.result));
+    reader.readAsDataURL(file);
+  }
 
   submit(): void {
     if (this.form.invalid) {
@@ -72,6 +86,7 @@ export class PlayerFormDialog {
       heightCm: Number(value.heightCm),
       weightKg: Number(value.weightKg),
       secondaryPositions: value.secondaryPositions,
+      photoUrl: value.photoUrl || undefined,
     });
   }
 }

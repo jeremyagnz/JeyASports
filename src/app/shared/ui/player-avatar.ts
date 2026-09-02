@@ -4,7 +4,15 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 @Component({
   selector: 'app-player-avatar',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<span class="avatar" [style.--avatar-size.px]="size()">{{ initials() }}</span>`,
+  template: `
+    <span class="avatar" [style.--avatar-size.px]="size()">
+      @if (photoUrl()) {
+        <img [src]="photoUrl()" [alt]="firstName() + ' ' + lastName()" />
+      } @else {
+        {{ initials() }}
+      }
+    </span>
+  `,
   styles: `
     .avatar {
       display: inline-flex;
@@ -18,12 +26,19 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
       font-weight: 800;
       font-size: calc(var(--avatar-size, 36px) * 0.38);
       letter-spacing: 0.02em;
+      overflow: hidden;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   `,
 })
 export class PlayerAvatar {
   readonly firstName = input('');
   readonly lastName = input('');
+  readonly photoUrl = input('');
   readonly size = input(36);
 
   readonly initials = computed(

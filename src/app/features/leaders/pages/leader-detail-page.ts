@@ -23,7 +23,7 @@ import { LeadersFacade } from '../leaders.facade';
         <table class="app-stat-table">
           <thead>
             <tr>
-              <th>Jugadora</th>
+              <th>Jugador</th>
               <th>#</th>
               <th>{{ board.definition.label }}</th>
             </tr>

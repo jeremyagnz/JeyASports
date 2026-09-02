@@ -50,6 +50,11 @@
     <input type="color" formControlName="primaryColor" />
   </label>
 
+  <label class="team-form__file">
+    <span>Logo del equipo</span>
+    <input type="file" accept="image/*" (change)="onLogoSelected($event)" />
+  </label>
+
   <label class="team-form__color">
     <span>Color secundario</span>
     <input type="color" formControlName="secondaryColor" />

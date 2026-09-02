@@ -60,7 +60,7 @@ export class GameDayPage {
 
   playerName(playerId: string): string {
     const player = this.players.byId().get(playerId);
-    return player ? `#${player.jerseyNumber} ${player.firstName} ${player.lastName}` : 'Jugadora';
+    return player ? `#${player.jerseyNumber} ${player.firstName} ${player.lastName}` : 'Jugador';
   }
 
   saveLineup(entries: readonly LineupEntry[]): void {

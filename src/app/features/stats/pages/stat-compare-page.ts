@@ -25,13 +25,13 @@ interface ComparisonRow {
   template: `
     <app-page-header
       eyebrow="Estadísticas"
-      title="Comparar jugadoras"
+      title="Comparar jugadores"
       subtitle="Enfrenta dos líneas ofensivas de la temporada activa."
     />
 
     <div class="compare__selectors">
       <mat-form-field appearance="outline">
-        <mat-label>Jugadora A</mat-label>
+        <mat-label>Jugador A</mat-label>
         <mat-select [ngModel]="leftId()" (ngModelChange)="leftId.set($event)">
           @for (line of facade.batting(); track line.playerId) {
             <mat-option [value]="line.playerId">{{ nameOf(line.playerId) }}</mat-option>
@@ -40,7 +40,7 @@ interface ComparisonRow {
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Jugadora B</mat-label>
+        <mat-label>Jugador B</mat-label>
         <mat-select [ngModel]="rightId()" (ngModelChange)="rightId.set($event)">
           @for (line of facade.batting(); track line.playerId) {
             <mat-option [value]="line.playerId">{{ nameOf(line.playerId) }}</mat-option>
@@ -73,8 +73,8 @@ interface ComparisonRow {
     } @else {
       <app-empty-state
         icon="compare_arrows"
-        title="Elige dos jugadoras"
-        message="Selecciona dos jugadoras con estadísticas en la temporada activa."
+        title="Elige dos jugadores"
+        message="Selecciona dos jugadores con estadísticas en la temporada activa."
       />
     }
   `,

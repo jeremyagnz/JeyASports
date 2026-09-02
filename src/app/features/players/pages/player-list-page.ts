@@ -60,7 +60,7 @@ export class PlayerListPage {
           return;
         }
         this.facade.create(result).subscribe({
-          next: () => this.facade.notifySuccess('Jugadora creada.'),
+          next: () => this.facade.notifySuccess('Jugador creado.'),
           error: (error: unknown) => this.facade.notifyError(error),
         });
       });
@@ -75,7 +75,7 @@ export class PlayerListPage {
           return;
         }
         this.facade.update(player.id, result).subscribe({
-          next: () => this.facade.notifySuccess('Jugadora actualizada.'),
+          next: () => this.facade.notifySuccess('Jugador actualizado.'),
           error: (error: unknown) => this.facade.notifyError(error),
         });
       });
@@ -84,14 +84,14 @@ export class PlayerListPage {
   confirmRemove(player: Player): void {
     this.confirm
       .confirm({
-        title: 'Eliminar jugadora',
+        title: 'Eliminar jugador',
         message: `Se eliminarán también sus estadísticas y su lugar en el roster. ¿Eliminar a ${player.firstName} ${player.lastName}?`,
         confirmLabel: 'Eliminar',
         destructive: true,
       })
       .pipe(switchMap((confirmed) => (confirmed ? this.facade.remove(player.id) : [])))
       .subscribe({
-        next: () => this.facade.notifySuccess('Jugadora eliminada.'),
+        next: () => this.facade.notifySuccess('Jugador eliminado.'),
         error: (error: unknown) => this.facade.notifyError(error),
       });
   }

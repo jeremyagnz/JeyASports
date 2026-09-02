@@ -1,10 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
-import { StatGroup } from '../../../data/models';
+import { PermissionService } from '../../../core/services/permission.service';
+import {
+  BattingStatLine, FieldingStatLine, PitchingStatLine, StatGroup, UpdateDto,
+} from '../../../data/models';
 import { PageHeader } from '../../../shared/ui/page-header';
 import { StatCard } from '../../../shared/ui/stat-card';
 import { StatTable } from '../../../shared/ui/stat-table';
@@ -14,6 +18,7 @@ import { battingColumns, fieldingColumns, pitchingColumns } from '../stat-column
 import { StatsFacade } from '../stats.facade';
 import { battingRates } from '../../../core/domain/stats-calculator';
 import { formatAvg } from '../../../shared/utils/format';
+import { StatEditDialog } from '../components/stat-edit-dialog';
 
 @Component({
   selector: 'app-team-stats-page',
@@ -34,8 +39,10 @@ import { formatAvg } from '../../../shared/utils/format';
 })
 export class TeamStatsPage {
   readonly facade = inject(StatsFacade);
+  readonly permissions = inject(PermissionService);
   private readonly playersFacade = inject(PlayersFacade);
   private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
 
   private readonly nameOf = computed(() => {
     const players = this.playersFacade.byId();
@@ -64,6 +71,29 @@ export class TeamStatsPage {
 
   compare(): void {
     void this.router.navigate(['/app/stats/compare']);
+  }
+
+  editStats(
+    group: StatGroup,
+    row: BattingStatLine | PitchingStatLine | FieldingStatLine,
+  ): void {
+    if (!this.permissions.canManageStats()) {
+      return;
+    }
+    this.dialog.open(StatEditDialog, {
+      data: { group, row: row as unknown as Record<string, unknown> },
+    }).afterClosed().subscribe((patch) => {
+      if (!patch) {
+        return;
+      }
+      if (group === 'batting') {
+        this.facade.updateSeasonBatting(row.playerId, patch as UpdateDto<BattingStatLine>).subscribe();
+      } else if (group === 'pitching') {
+        this.facade.updateSeasonPitching(row.playerId, patch as UpdateDto<PitchingStatLine>).subscribe();
+      } else {
+        this.facade.updateSeasonFielding(row.playerId, patch as UpdateDto<FieldingStatLine>).subscribe();
+      }
+    });
   }
 
   exportCsv(): void {

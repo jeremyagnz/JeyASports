@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { PermissionService } from '../../../core/services/permission.service';
 import { Game } from '../../../data/models';
 import { EmptyState } from '../../../shared/ui/empty-state';
@@ -26,6 +27,7 @@ export class GameListPage {
   readonly facade = inject(GamesFacade);
   readonly actions = inject(GameActionsService);
   readonly permissions = inject(PermissionService);
+  private readonly router = inject(Router);
 
   /** Most recent first: results are what people look for on this page. */
   readonly games = computed(() => [...this.facade.games()].reverse());
@@ -36,5 +38,16 @@ export class GameListPage {
 
   scoreline(game: Game): string {
     return game.status === 'FINAL' ? `${game.teamScore} - ${game.opponentScore}` : '-';
+  }
+
+  openDetail(game: Game): void {
+    void this.router.navigate(['/app/games', game.id]);
+  }
+
+  onRowKeydown(event: KeyboardEvent, game: Game): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.openDetail(game);
+    }
   }
 }

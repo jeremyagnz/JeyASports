@@ -6,6 +6,11 @@
   border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
   background: var(--app-color-surface-raised);
+  min-width: 0;
+}
+
+.team-form mat-form-field {
+  min-width: 0;
 }
 
 .team-form__color {

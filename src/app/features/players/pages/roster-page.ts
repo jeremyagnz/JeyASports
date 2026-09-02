@@ -18,7 +18,7 @@ import { PlayersFacade } from '../players.facade';
     <app-page-header
       eyebrow="Temporada {{ seasonContext.activeSeason()?.year }}"
       title="Roster"
-      subtitle="Jugadoras inscritas en la temporada activa. El número puede cambiar cada año."
+      subtitle="Jugadores inscritos en la temporada activa. El número puede cambiar cada año."
     />
 
     <div class="roster__columns">
@@ -62,7 +62,7 @@ import { PlayersFacade } from '../players.facade';
             }
           </div>
         } @empty {
-          <app-empty-state icon="check_circle" title="Todas las jugadoras están inscritas" />
+          <app-empty-state icon="check_circle" title="Todos los jugadores están inscritos" />
         }
       </section>
     </div>
@@ -111,14 +111,14 @@ export class RosterPage {
 
   add(player: Player): void {
     this.facade.addToRoster(player).subscribe({
-      next: () => this.facade.notifySuccess('Jugadora añadida al roster.'),
+      next: () => this.facade.notifySuccess('Jugador añadido al roster.'),
       error: (error: unknown) => this.facade.notifyError(error),
     });
   }
 
   remove(entryId: string): void {
     this.facade.removeFromRoster(entryId).subscribe({
-      next: () => this.facade.notifySuccess('Jugadora retirada del roster.'),
+      next: () => this.facade.notifySuccess('Jugador retirado del roster.'),
       error: (error: unknown) => this.facade.notifyError(error),
     });
   }
