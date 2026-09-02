@@ -1,0 +1,62 @@
+<mat-toolbar class="shell__toolbar">
+  <button matIconButton class="shell__menu-button" aria-label="Menú" (click)="toggleSidenav()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <a class="shell__brand" routerLink="/app/dashboard">
+    <span class="shell__brand-mark">JA</span>
+    <span class="shell__brand-name">JeyA Sports</span>
+  </a>
+  <span class="shell__spacer"></span>
+  <app-season-selector />
+  <app-team-switcher />
+  <app-user-menu />
+</mat-toolbar>
+
+<mat-sidenav-container class="shell__container">
+  <mat-sidenav
+    class="shell__sidenav"
+    mode="side"
+    opened
+    disableClose
+  >
+    <nav>
+      <mat-nav-list>
+        @for (item of navItems(); track item.path) {
+          <a
+            mat-list-item
+            [routerLink]="item.path"
+            routerLinkActive="shell__link--active"
+            (click)="sidenavOpened.set(false)"
+          >
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            <span matListItemTitle>{{ item.label }}</span>
+          </a>
+        }
+      </mat-nav-list>
+    </nav>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="shell__content">
+    <div class="shell__page">
+      <router-outlet />
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+@if (sidenavOpened()) {
+  <div class="shell__mobile-nav">
+    <mat-nav-list>
+      @for (item of navItems(); track item.path) {
+        <a
+          mat-list-item
+          [routerLink]="item.path"
+          routerLinkActive="shell__link--active"
+          (click)="sidenavOpened.set(false)"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+  </div>
+}

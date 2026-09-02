@@ -1,0 +1,50 @@
+<app-page-header
+  eyebrow="Administración"
+  title="Herramientas de datos"
+  subtitle="Fase 1 guarda todo en el navegador. Exporta antes de limpiar tu almacenamiento local."
+/>
+
+<app-administration-nav />
+
+<section class="data-tools__grid">
+  <article class="data-tools__panel">
+    <h2>Almacenamiento</h2>
+    <p class="data-tools__metric app-numeric">{{ facade.storageKilobytes() }} KB</p>
+    <p class="data-tools__hint">Espacio usado en localStorage por la base de datos local.</p>
+  </article>
+
+  <article class="data-tools__panel">
+    <h2>Exportar</h2>
+    <p class="data-tools__hint">Descarga un respaldo JSON con todos los equipos y estadísticas.</p>
+    <button matButton="filled" (click)="export()">
+      <mat-icon>download</mat-icon>
+      Exportar JSON
+    </button>
+  </article>
+
+  <article class="data-tools__panel">
+    <h2>Restablecer</h2>
+    <p class="data-tools__hint">Vuelve a generar el set de datos de demostración determinista.</p>
+    <button matButton="outlined" (click)="reseed()">
+      <mat-icon>restart_alt</mat-icon>
+      Restablecer demo
+    </button>
+  </article>
+
+  <article class="data-tools__panel data-tools__panel--wide">
+    <h2>Importar</h2>
+    <mat-form-field appearance="outline" class="data-tools__field">
+      <mat-label>Pega aquí un respaldo JSON</mat-label>
+      <textarea
+        matInput
+        rows="6"
+        [value]="importPayload()"
+        (input)="onPayloadInput($event)"
+      ></textarea>
+    </mat-form-field>
+    <button matButton="filled" [disabled]="!importPayload().trim()" (click)="import()">
+      <mat-icon>upload</mat-icon>
+      Importar
+    </button>
+  </article>
+</section>

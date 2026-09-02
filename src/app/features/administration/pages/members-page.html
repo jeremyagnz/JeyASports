@@ -1,0 +1,40 @@
+<app-page-header
+  eyebrow="Administración"
+  title="Miembros"
+  subtitle="Roles simulados en Fase 1; en Fase 2 se aplicarán con políticas RLS en el servidor."
+/>
+
+<app-administration-nav />
+
+@if (facade.members().length === 0) {
+  <app-empty-state icon="group" title="Sin miembros" />
+} @else {
+  <ul class="members__list">
+    @for (member of facade.members(); track member.membership.id) {
+      <li>
+        <div class="members__identity">
+          <strong>{{ member.user?.displayName ?? 'Usuario' }}</strong>
+          <p>{{ member.user?.email }}</p>
+        </div>
+        <mat-select
+          class="members__role"
+          [value]="member.membership.role"
+          [disabled]="isSelf(member)"
+          (valueChange)="changeRole(member, $event)"
+        >
+          @for (role of roles; track role) {
+            <mat-option [value]="role">{{ role }}</mat-option>
+          }
+        </mat-select>
+        <button
+          matIconButton
+          [disabled]="isSelf(member)"
+          (click)="remove(member)"
+          aria-label="Quitar miembro"
+        >
+          <mat-icon>person_remove</mat-icon>
+        </button>
+      </li>
+    }
+  </ul>
+}

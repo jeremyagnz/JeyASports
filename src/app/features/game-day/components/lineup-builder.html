@@ -1,0 +1,39 @@
+<div class="lineup">
+  @for (row of rows(); track row.battingOrder; let index = $index) {
+    <div class="lineup__row">
+      <span class="lineup__order app-numeric">{{ row.battingOrder }}</span>
+      <mat-form-field appearance="outline" class="lineup__player">
+        <mat-label>Jugadora</mat-label>
+        <mat-select [value]="row.playerId" (valueChange)="setPlayer(index, $event)">
+          <mat-option value="">Vacío</mat-option>
+          @for (player of players(); track player.id) {
+            <mat-option [value]="player.id">
+              #{{ player.jerseyNumber }} {{ player.firstName }} {{ player.lastName }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="lineup__position">
+        <mat-label>Posición</mat-label>
+        <mat-select [value]="row.position" (valueChange)="setPosition(index, $event)">
+          @for (position of positions; track position) {
+            <mat-option [value]="position">{{ positionLabels[position] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  }
+</div>
+
+@if (duplicatePlayer()) {
+  <p class="lineup__error">Hay jugadoras repetidas en el orden al bat.</p>
+}
+
+<button
+  matButton="filled"
+  [disabled]="duplicatePlayer() || incomplete()"
+  (click)="emitSave()"
+>
+  <mat-icon>save</mat-icon>
+  Guardar lineup
+</button>

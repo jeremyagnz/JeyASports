@@ -1,0 +1,32 @@
+.lineup {
+  display: grid;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.lineup__row {
+  display: grid;
+  grid-template-columns: 2rem 1fr 150px;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.lineup__order {
+  font-weight: 700;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.lineup__error {
+  margin: 0 0 0.5rem;
+  color: var(--app-color-negative);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 640px) {
+  .lineup__row {
+    grid-template-columns: 1.5rem 1fr;
+  }
+  .lineup__position {
+    grid-column: 2;
+  }
+}

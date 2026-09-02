@@ -1,0 +1,95 @@
+<app-page-header
+  eyebrow="Roster"
+  title="Jugadoras"
+  subtitle="Perfil, posiciones y estado de cada integrante del equipo."
+>
+  @if (permissions.canManagePlayers()) {
+    <button matButton="filled" (click)="openCreate()">
+      <mat-icon>person_add</mat-icon>
+      Nueva jugadora
+    </button>
+  }
+</app-page-header>
+
+<div class="players__filters">
+  <mat-form-field appearance="outline">
+    <mat-label>Buscar</mat-label>
+    <input
+      matInput
+      type="search"
+      [ngModel]="facade.search()"
+      (ngModelChange)="onSearch($event)"
+      placeholder="Nombre o apellido"
+    />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Estado</mat-label>
+    <mat-select [ngModel]="facade.statusFilter()" (ngModelChange)="onStatus($event)">
+      @for (status of statuses; track status) {
+        <mat-option [value]="status">{{ status === 'ALL' ? 'Todos' : status }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Posición</mat-label>
+    <mat-select [ngModel]="facade.positionFilter()" (ngModelChange)="onPosition($event)">
+      <mat-option value="ALL">Todas</mat-option>
+      @for (position of positions; track position) {
+        <mat-option [value]="position">{{ position }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (facade.loading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (facade.error(); as message) {
+  <p class="players__error">{{ message }}</p>
+}
+
+@if (facade.visible().length === 0 && !facade.loading()) {
+  <app-empty-state
+    icon="groups"
+    title="Sin jugadoras"
+    message="Ajusta los filtros o crea la primera jugadora del equipo."
+  />
+} @else {
+  <div class="players__grid">
+    @for (player of facade.visible(); track player.id) {
+      <article class="player-card">
+        <a class="player-card__main" [routerLink]="['/app/players', player.id]">
+          <app-player-avatar
+            [firstName]="player.firstName"
+            [lastName]="player.lastName"
+            [size]="44"
+          />
+          <div>
+            <p class="player-card__name">{{ player.firstName }} {{ player.lastName }}</p>
+            <p class="player-card__meta">
+              <span class="player-card__number">#{{ player.jerseyNumber }}</span>
+              {{ player.primaryPosition }}
+              <span class="player-card__status" [class]="'is-' + player.status.toLowerCase()">
+                {{ player.status }}
+              </span>
+            </p>
+          </div>
+        </a>
+        @if (permissions.canManagePlayers()) {
+          <div class="player-card__actions">
+            <button matIconButton matTooltip="Editar" (click)="openEdit(player)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button matIconButton matTooltip="Eliminar" (click)="confirmRemove(player)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+      </article>
+    }
+  </div>
+}

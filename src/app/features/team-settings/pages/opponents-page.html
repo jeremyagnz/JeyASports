@@ -1,0 +1,43 @@
+<app-page-header
+  eyebrow="Configuración"
+  title="Rivales"
+  subtitle="Equipos contrarios usados al programar juegos."
+/>
+
+<app-team-settings-nav />
+
+<form [formGroup]="form" class="catalog__form" (ngSubmit)="add()">
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="name" />
+    @if (form.controls.name.hasError('required')) {
+      <mat-error>El nombre es obligatorio</mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Abreviatura</mat-label>
+    <input matInput formControlName="abbreviation" maxlength="5" />
+  </mat-form-field>
+  <button matButton="filled" type="submit">
+    <mat-icon>add</mat-icon>
+    Agregar
+  </button>
+</form>
+
+@if (facade.opponents().length === 0) {
+  <app-empty-state icon="groups" title="Sin rivales registrados" />
+} @else {
+  <ul class="catalog__list">
+    @for (opponent of facade.opponents(); track opponent.id) {
+      <li>
+        <div>
+          <strong>{{ opponent.name }}</strong>
+          <p>{{ opponent.abbreviation }}</p>
+        </div>
+        <button matIconButton (click)="remove(opponent)" aria-label="Eliminar rival">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </li>
+    }
+  </ul>
+}

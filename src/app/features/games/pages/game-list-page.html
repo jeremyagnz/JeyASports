@@ -1,0 +1,63 @@
+<app-page-header
+  eyebrow="Temporada"
+  title="Juegos"
+  subtitle="Resultados, box scores y registro de la temporada activa."
+>
+  @if (permissions.canManageGames()) {
+    <button matButton="filled" (click)="actions.openCreate()">
+      <mat-icon>add</mat-icon>
+      Nuevo juego
+    </button>
+  }
+</app-page-header>
+
+@if (facade.loading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (games().length === 0 && !facade.loading()) {
+  <app-empty-state
+    icon="sports_baseball"
+    title="Sin juegos"
+    message="Crea el primer juego de la temporada para empezar a registrar estadísticas."
+  />
+} @else {
+  <div class="games__list">
+    @for (game of games(); track game.id) {
+      <article class="game-row" [class.game-row--final]="game.status === 'FINAL'">
+        <div class="game-row__date">
+          <span>{{ formatDate(game.date) }}</span>
+          <span class="game-row__time">{{ game.time }}</span>
+        </div>
+        <a class="game-row__match" [routerLink]="['/app/games', game.id]">
+          {{ facade.describe(game) }}
+        </a>
+        <div class="game-row__score">
+          @if (game.status === 'FINAL') {
+            <span class="game-row__result" [class]="'is-' + game.result">{{ game.result }}</span>
+            <span class="app-numeric">{{ scoreline(game) }}</span>
+          } @else {
+            <span class="game-row__status">{{ game.status }}</span>
+          }
+        </div>
+        <div class="game-row__actions">
+          @if (permissions.canManageGames()) {
+            <a
+              matIconButton
+              matTooltip="Registrar en vivo"
+              [routerLink]="['/app/games', game.id, 'live']"
+            >
+              <mat-icon>play_circle</mat-icon>
+            </a>
+            <button matIconButton matTooltip="Editar" (click)="actions.openEdit(game)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button matIconButton matTooltip="Eliminar" (click)="actions.confirmRemove(game)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          }
+        </div>
+      </article>
+    }
+  </div>
+}

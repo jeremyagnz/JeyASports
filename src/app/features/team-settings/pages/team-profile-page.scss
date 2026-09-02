@@ -1,0 +1,33 @@
+.team-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background: var(--app-color-surface-raised);
+}
+
+.team-form__color {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+}
+
+.team-form__color input {
+  width: 3rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-sm);
+  background: none;
+}
+
+.team-form__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+}

@@ -1,0 +1,26 @@
+// Design tokens for the JeyA Sports identity. Deliberately independent from any
+// existing sports brand: our own palette, spacing scale and numeric typography.
+:root {
+  --app-color-accent: #19b8a6;
+  --app-color-accent-strong: #0f8d80;
+  --app-color-surface-raised: #16202c;
+  --app-color-surface-sunken: #0c141d;
+  --app-color-border: rgba(255, 255, 255, 0.08);
+  --app-color-positive: #35c46a;
+  --app-color-negative: #ef5f5f;
+  --app-color-warning: #f2b134;
+
+  --app-radius-sm: 6px;
+  --app-radius-md: 12px;
+  --app-radius-lg: 20px;
+
+  --app-space-1: 0.25rem;
+  --app-space-2: 0.5rem;
+  --app-space-3: 0.75rem;
+  --app-space-4: 1rem;
+  --app-space-6: 1.5rem;
+  --app-space-8: 2rem;
+
+  --app-font-numeric: 'Roboto Condensed', 'Roboto', system-ui, sans-serif;
+  --app-shell-max-width: 1400px;
+}

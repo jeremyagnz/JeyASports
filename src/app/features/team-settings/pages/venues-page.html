@@ -1,0 +1,43 @@
+<app-page-header
+  eyebrow="Configuración"
+  title="Sedes"
+  subtitle="Campos donde el equipo juega como local o visitante."
+/>
+
+<app-team-settings-nav />
+
+<form [formGroup]="form" class="catalog__form" (ngSubmit)="add()">
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="name" />
+    @if (form.controls.name.hasError('required')) {
+      <mat-error>El nombre es obligatorio</mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Dirección</mat-label>
+    <input matInput formControlName="address" />
+  </mat-form-field>
+  <button matButton="filled" type="submit">
+    <mat-icon>add</mat-icon>
+    Agregar
+  </button>
+</form>
+
+@if (facade.venues().length === 0) {
+  <app-empty-state icon="stadium" title="Sin sedes registradas" />
+} @else {
+  <ul class="catalog__list">
+    @for (venue of facade.venues(); track venue.id) {
+      <li>
+        <div>
+          <strong>{{ venue.name }}</strong>
+          <p>{{ venue.address || 'Sin dirección' }}</p>
+        </div>
+        <button matIconButton (click)="remove(venue)" aria-label="Eliminar sede">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </li>
+    }
+  </ul>
+}

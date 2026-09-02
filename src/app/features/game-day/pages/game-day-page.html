@@ -1,0 +1,132 @@
+<a matButton [routerLink]="['/app/games', id()]">
+  <mat-icon>arrow_back</mat-icon>
+  Volver al juego
+</a>
+
+@if (facade.game(); as game) {
+  <header class="game-day__scoreboard">
+    <div class="game-day__team">
+      <span>Nosotras</span>
+      <strong class="app-numeric">{{ game.teamScore ?? 0 }}</strong>
+    </div>
+    <div class="game-day__inning">
+      <div class="game-day__inning-controls">
+        <button matIconButton (click)="changeInning(-1)" aria-label="Entrada anterior">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <span class="app-numeric">{{ facade.inning() }}</span>
+        <button matIconButton (click)="changeInning(1)" aria-label="Entrada siguiente">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+      <div class="game-day__half">
+        <button matButton [class.is-active]="facade.half() === 'TOP'" (click)="setHalf('TOP')">
+          Alta
+        </button>
+        <button matButton [class.is-active]="facade.half() === 'BOTTOM'" (click)="setHalf('BOTTOM')">
+          Baja
+        </button>
+      </div>
+      <span class="game-day__outs">{{ facade.outs() }} outs</span>
+    </div>
+    <div class="game-day__team">
+      <span>{{ gamesFacade.describe(game) }}</span>
+      <strong class="app-numeric">{{ game.opponentScore ?? 0 }}</strong>
+    </div>
+  </header>
+
+  <div class="game-day__grid">
+    <section class="game-day__panel">
+      <h2>Lineup</h2>
+      <app-lineup-builder
+        [players]="activePlayers()"
+        [entries]="facade.entries()"
+        (save)="saveLineup($event)"
+      />
+    </section>
+
+    <section class="game-day__panel">
+      <h2>Registrar turno al bat</h2>
+      @if (facade.entries().length === 0) {
+        <app-empty-state
+          icon="format_list_numbered"
+          title="Guarda un lineup"
+          message="Necesitas un orden al bat antes de registrar turnos."
+        />
+      } @else {
+        <mat-form-field appearance="outline">
+          <mat-label>Bateadora</mat-label>
+          <mat-select [value]="selectedBatterId()" (valueChange)="batterId.set($event)">
+            @for (entry of facade.entries(); track entry.playerId) {
+              <mat-option [value]="entry.playerId">
+                {{ entry.battingOrder }}. {{ playerName(entry.playerId) }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Resultado</mat-label>
+          <mat-select [value]="result()" (valueChange)="result.set($event)">
+            @for (play of playResults; track play) {
+              <mat-option [value]="play">{{ playResultLabels[play] }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <div class="game-day__counters">
+          <mat-form-field appearance="outline">
+            <mat-label>Carreras impulsadas</mat-label>
+            <input matInput type="number" min="0" [value]="rbi()" (input)="rbi.set(toNumber($event))" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Carreras anotadas</mat-label>
+            <input matInput type="number" min="0" [value]="runs()" (input)="runs.set(toNumber($event))" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Outs en la jugada</mat-label>
+            <input matInput type="number" min="0" max="3" [value]="outs()" (input)="outs.set(toNumber($event))" />
+          </mat-form-field>
+        </div>
+
+        <div class="game-day__actions">
+          <button matButton="filled" (click)="record()">
+            <mat-icon>add</mat-icon>
+            Registrar jugada
+          </button>
+          <button matButton (click)="facade.undoLastPlay()" [disabled]="facade.plays().length === 0">
+            <mat-icon>undo</mat-icon>
+            Deshacer
+          </button>
+          <button matButton="outlined" (click)="facade.addOpponentRuns(1)">
+            <mat-icon>exposure_plus_1</mat-icon>
+            Carrera rival
+          </button>
+          <button matButton="outlined" (click)="facade.finalize()">
+            <mat-icon>flag</mat-icon>
+            Finalizar juego
+          </button>
+        </div>
+      }
+    </section>
+
+    <section class="game-day__panel">
+      <h2>Últimas jugadas</h2>
+      @if (recentPlays().length === 0) {
+        <app-empty-state icon="history" title="Sin jugadas registradas" />
+      } @else {
+        <ul class="game-day__plays">
+          @for (play of recentPlays(); track play.id) {
+            <li>
+              <span class="app-numeric">{{ play.inning }}{{ play.half === 'TOP' ? '▲' : '▼' }}</span>
+              <span>{{ playerName(play.playerId) }}</span>
+              <strong>{{ playResultLabels[play.result] }}</strong>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+} @else if (!facade.loading()) {
+  <app-empty-state icon="event_busy" title="Juego no encontrado" />
+}

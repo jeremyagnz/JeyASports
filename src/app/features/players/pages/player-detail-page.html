@@ -1,0 +1,71 @@
+@if (player(); as player) {
+  <a matButton routerLink="/app/players" class="detail__back">
+    <mat-icon>arrow_back</mat-icon>
+    Jugadoras
+  </a>
+
+  <header class="detail__hero">
+    <app-player-avatar [firstName]="player.firstName" [lastName]="player.lastName" [size]="88" />
+    <div class="detail__identity">
+      <p class="detail__number">#{{ player.jerseyNumber }}</p>
+      <h1>{{ player.firstName }} {{ player.lastName }}</h1>
+      <p class="detail__meta">
+        {{ positionLabels[player.primaryPosition] }} ·
+        B/L: {{ player.bats }}/{{ player.throws }} ·
+        {{ player.heightCm }} cm · {{ player.weightKg }} kg ·
+        <span class="detail__status">{{ player.status }}</span>
+      </p>
+    </div>
+  </header>
+
+  <mat-tab-group>
+    <mat-tab label="Resumen">
+      <div class="detail__panel">
+        <p class="detail__bio">{{ player.bio }}</p>
+        @if (battingSummary(); as summary) {
+          <div class="detail__cards">
+            <app-stat-card label="JJ" [value]="summary.gp" />
+            <app-stat-card label="AVG" [value]="summary.avg" />
+            <app-stat-card label="OBP" [value]="summary.obp" />
+            <app-stat-card label="SLG" [value]="summary.slg" />
+            <app-stat-card label="OPS" [value]="summary.ops" />
+            <app-stat-card label="H" [value]="summary.h" />
+            <app-stat-card label="HR" [value]="summary.hr" />
+            <app-stat-card label="CI" [value]="summary.rbi" />
+          </div>
+        } @else {
+          <app-empty-state
+            icon="query_stats"
+            title="Sin estadísticas en esta temporada"
+            message="Registra un juego para ver sus números."
+          />
+        }
+
+        @if (pitchingSummary(); as summary) {
+          <h2 class="detail__section">Pitcheo</h2>
+          <div class="detail__cards">
+            <app-stat-card label="Récord" [value]="summary.record" />
+            <app-stat-card label="IP" [value]="summary.ip" />
+            <app-stat-card label="ERA" [value]="summary.era" />
+            <app-stat-card label="WHIP" [value]="summary.whip" />
+            <app-stat-card label="K" [value]="summary.so" />
+          </div>
+        }
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Bitácora">
+      <div class="detail__panel">
+        <app-stat-table
+          [columns]="gameLogColumns()"
+          [rows]="battingLog()"
+          initialSort="game"
+          initialDirection="asc"
+          emptyMessage="Sin juegos registrados en esta temporada."
+        />
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+} @else {
+  <app-empty-state icon="person_off" title="Jugadora no encontrada" />
+}

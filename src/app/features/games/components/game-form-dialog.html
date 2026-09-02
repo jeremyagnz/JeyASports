@@ -1,0 +1,76 @@
+<h2 mat-dialog-title>{{ data.game ? 'Editar juego' : 'Nuevo juego' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="game-form">
+    <mat-form-field appearance="outline" class="game-form__full">
+      <mat-label>Rival</mat-label>
+      <mat-select formControlName="opponentId">
+        @for (opponent of data.opponents; track opponent.id) {
+          <mat-option [value]="opponent.id">{{ opponent.name }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.opponentId.hasError('required')) {
+        <mat-error>Selecciona un rival</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha</mat-label>
+      <input matInput type="date" formControlName="date" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Hora</mat-label>
+      <input matInput type="time" formControlName="time" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Localía</mat-label>
+      <mat-select formControlName="homeAway">
+        <mat-option value="HOME">Casa</mat-option>
+        <mat-option value="AWAY">Visita</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Sede</mat-label>
+      <mat-select formControlName="venueId">
+        <mat-option value="">Sin definir</mat-option>
+        @for (venue of data.venues; track venue.id) {
+          <mat-option [value]="venue.id">{{ venue.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Estado</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="SCHEDULED">Programado</mat-option>
+        <mat-option value="IN_PROGRESS">En curso</mat-option>
+        <mat-option value="FINAL">Final</mat-option>
+        <mat-option value="POSTPONED">Pospuesto</mat-option>
+        <mat-option value="CANCELED">Cancelado</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    @if (form.controls.status.value === 'FINAL') {
+      <mat-form-field appearance="outline">
+        <mat-label>Carreras del equipo</mat-label>
+        <input matInput type="number" formControlName="teamScore" min="0" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Carreras del rival</mat-label>
+        <input matInput type="number" formControlName="opponentScore" min="0" />
+      </mat-form-field>
+    }
+
+    <mat-form-field appearance="outline" class="game-form__full">
+      <mat-label>Notas</mat-label>
+      <textarea matInput rows="2" formControlName="notes"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button matButton (click)="dialogRef.close()">Cancelar</button>
+  <button matButton="filled" (click)="submit()">Guardar</button>
+</mat-dialog-actions>
