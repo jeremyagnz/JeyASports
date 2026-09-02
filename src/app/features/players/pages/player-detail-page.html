@@ -5,7 +5,7 @@
   </a>
 
   <header class="detail__hero">
-    <app-player-avatar [firstName]="player.firstName" [lastName]="player.lastName" [size]="88" />
+    <app-player-avatar [firstName]="player.firstName" [lastName]="player.lastName" [photoUrl]="player.photoUrl ?? ''" [size]="88" />
     <div class="detail__identity">
       <p class="detail__number">#{{ player.jerseyNumber }}</p>
       <h1>{{ player.firstName }} {{ player.lastName }}</h1>

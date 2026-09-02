@@ -88,6 +88,11 @@
       <mat-label>Biografía</mat-label>
       <textarea matInput rows="3" formControlName="bio"></textarea>
     </mat-form-field>
+
+    <label class="player-form__full player-form__file">
+      <span>Foto de la jugadora</span>
+      <input type="file" accept="image/*" (change)="onPhotoSelected($event)" />
+    </label>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

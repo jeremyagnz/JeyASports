@@ -11,7 +11,11 @@ import { TeamContextService } from '../core/context/team-context.service';
   template: `
     <button matButton [matMenuTriggerFor]="menu" [disabled]="!teamContext.hasMultipleTeams()">
       <span class="switcher__badge" [style.background]="teamContext.activeTeam()?.primaryColor">
-        {{ teamContext.activeTeam()?.abbreviation }}
+        @if (teamContext.activeTeam()?.logoUrl; as logo) {
+          <img [src]="logo" alt="" />
+        } @else {
+          {{ teamContext.activeTeam()?.abbreviation }}
+        }
       </span>
       <span class="switcher__name">{{ teamContext.activeTeam()?.name }}</span>
       @if (teamContext.hasMultipleTeams()) {
@@ -22,7 +26,11 @@ import { TeamContextService } from '../core/context/team-context.service';
       @for (team of teamContext.availableTeams(); track team.id) {
         <button mat-menu-item (click)="teamContext.switchTeam(team.id)">
           <span class="switcher__badge" [style.background]="team.primaryColor">
-            {{ team.abbreviation }}
+            @if (team.logoUrl; as logo) {
+              <img [src]="logo" alt="" />
+            } @else {
+              {{ team.abbreviation }}
+            }
           </span>
           {{ team.name }}
         </button>
@@ -41,6 +49,11 @@ import { TeamContextService } from '../core/context/team-context.service';
       font-weight: 800;
       font-size: 0.72rem;
       color: #08121a;
+    }
+    .switcher__badge img {
+      width: 1.8rem;
+      height: 1.8rem;
+      object-fit: contain;
     }
     .switcher__name {
       font-weight: 600;
