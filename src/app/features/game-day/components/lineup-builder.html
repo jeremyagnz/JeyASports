@@ -1,7 +1,12 @@
 <div class="lineup">
   @for (row of rows(); track row.battingOrder; let index = $index) {
     <div class="lineup__row">
-      <span class="lineup__order app-numeric">{{ row.battingOrder }}</span>
+      <span class="lineup__order app-numeric">
+        {{ row.battingOrder }}
+        @if (row.position === 'EP') {
+          <small>Extra</small>
+        }
+      </span>
       <mat-form-field appearance="outline" class="lineup__player">
         <mat-label>Jugadora</mat-label>
         <mat-select [value]="row.playerId" [disabled]="!editable()" (valueChange)="setPlayer(index, $event)">
