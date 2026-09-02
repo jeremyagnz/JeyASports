@@ -8,7 +8,7 @@ import { RouterLink } from '@angular/router';
 import { catchError, combineLatest, of, switchMap } from 'rxjs';
 import { PermissionService } from '../../../core/services/permission.service';
 import {
-  BattingStatLine, FieldingStatLine, Game, PitchingStatLine,
+  BattingStatLine, FieldingStatLine, Game, PitchingStatLine, UpdateDto,
 } from '../../../data/models';
 import { EmptyState } from '../../../shared/ui/empty-state';
 import { StatTable } from '../../../shared/ui/stat-table';
@@ -95,20 +95,26 @@ export class GameDetailPage {
     return formatLongDate(value);
   }
 
-  editStats(group: 'batting' | 'pitching' | 'fielding', row: Record<string, unknown>): void {
+  editStats(
+    group: 'batting' | 'pitching' | 'fielding',
+    row: BattingStatLine | PitchingStatLine | FieldingStatLine,
+  ): void {
     if (!this.permissions.canManageStats()) {
       return;
     }
-    this.dialog.open(StatEditDialog, { data: { group, row } }).afterClosed().subscribe((patch) => {
+    this.dialog.open(StatEditDialog, {
+      data: { group, row: row as unknown as Record<string, unknown> },
+    }).afterClosed().subscribe((patch) => {
       if (!patch) {
         return;
       }
-      const update = group === 'batting'
-        ? this.statsFacade.updateBatting(String(row['id']), patch)
-        : group === 'pitching'
-          ? this.statsFacade.updatePitching(String(row['id']), patch)
-          : this.statsFacade.updateFielding(String(row['id']), patch);
-      update.subscribe();
+      if (group === 'batting') {
+        this.statsFacade.updateBatting(row.id, patch as UpdateDto<BattingStatLine>).subscribe();
+      } else if (group === 'pitching') {
+        this.statsFacade.updatePitching(row.id, patch as UpdateDto<PitchingStatLine>).subscribe();
+      } else {
+        this.statsFacade.updateFielding(row.id, patch as UpdateDto<FieldingStatLine>).subscribe();
+      }
     });
   }
 

@@ -186,14 +186,6 @@ export class GameDayFacade {
     if (!game || runs === 0) {
       return;
     }
-
-    setTeamRuns(inning: number, runs: number): void {
-      this.updateLineScore('team', inning, runs);
-    }
-
-    setOpponentRuns(inning: number, runs: number): void {
-      this.updateLineScore('opponent', inning, runs);
-    }
     const line = [...game.opponentLineScore];
     const index = this.inning() - 1;
     line[index] = Math.max(0, (line[index] ?? 0) + runs);
@@ -206,27 +198,18 @@ export class GameDayFacade {
       });
   }
 
+  setTeamRuns(inning: number, runs: number): void {
+    this.updateLineScore('team', inning, runs);
+  }
+
+  setOpponentRuns(inning: number, runs: number): void {
+    this.updateLineScore('opponent', inning, runs);
+  }
+
   finalize(): void {
     const game = this.gameState();
     if (!game) {
       return;
-    }
-
-    private updateLineScore(side: 'team' | 'opponent', inning: number, runs: number): void {
-      const game = this.gameState();
-      if (!game || inning < 1 || !Number.isFinite(runs)) {
-        return;
-      }
-      const line = [...(side === 'team' ? game.teamLineScore : game.opponentLineScore)];
-      line[inning - 1] = Math.max(0, Math.floor(runs));
-      const total = line.reduce((sum, value) => sum + value, 0);
-      const patch = side === 'team'
-        ? { teamLineScore: line, teamScore: total }
-        : { opponentLineScore: line, opponentScore: total };
-      this.games.update(game.id, patch).subscribe({
-        next: (updated) => this.gameState.set(updated),
-        error: (error: unknown) => this.notifications.error(error),
-      });
     }
     const teamScore = game.teamScore ?? 0;
     const opponentScore = game.opponentScore ?? 0;
@@ -245,6 +228,23 @@ export class GameDayFacade {
         },
         error: (error: unknown) => this.notifications.error(error),
       });
+  }
+
+  private updateLineScore(side: 'team' | 'opponent', inning: number, runs: number): void {
+    const game = this.gameState();
+    if (!game || inning < 1 || !Number.isFinite(runs)) {
+      return;
+    }
+    const line = [...(side === 'team' ? game.teamLineScore : game.opponentLineScore)];
+    line[inning - 1] = Math.max(0, Math.floor(runs));
+    const total = line.reduce((sum, value) => sum + value, 0);
+    const patch = side === 'team'
+      ? { teamLineScore: line, teamScore: total }
+      : { opponentLineScore: line, opponentScore: total };
+    this.games.update(game.id, patch).subscribe({
+      next: (updated) => this.gameState.set(updated),
+      error: (error: unknown) => this.notifications.error(error),
+    });
   }
 
   private applyRuns(game: Game, runs: number): Observable<Game> {

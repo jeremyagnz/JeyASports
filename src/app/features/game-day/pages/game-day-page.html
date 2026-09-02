@@ -8,6 +8,11 @@
     <div class="game-day__team">
       <span>Nosotras</span>
       <strong class="app-numeric">{{ game.teamScore ?? 0 }}</strong>
+      @if (permissions.canManageStats()) {
+        <input matInput class="game-day__score-adjust" type="number" min="0"
+          [value]="game.teamLineScore[facade.inning() - 1] ?? 0"
+          (change)="facade.setTeamRuns(facade.inning(), toNumber($event))" aria-label="Carreras del equipo en la entrada actual" />
+      }
     </div>
     <div class="game-day__inning">
       <div class="game-day__inning-controls">
@@ -32,6 +37,11 @@
     <div class="game-day__team">
       <span>{{ gamesFacade.describe(game) }}</span>
       <strong class="app-numeric">{{ game.opponentScore ?? 0 }}</strong>
+      @if (permissions.canManageStats()) {
+        <input matInput class="game-day__score-adjust" type="number" min="0"
+          [value]="game.opponentLineScore[facade.inning() - 1] ?? 0"
+          (change)="facade.setOpponentRuns(facade.inning(), toNumber($event))" aria-label="Carreras rivales en la entrada actual" />
+      }
     </div>
   </header>
 

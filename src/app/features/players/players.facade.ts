@@ -119,10 +119,11 @@ export class PlayersFacade {
               } as CreateDto<RosterEntry>)
               .pipe(map(() => player))
           : of(player),
-      ).pipe(tap((created) => this.playersState.update((players) => [
+      ),
+      tap((created) => this.playersState.update((players) => [
         ...players.filter((candidate) => candidate.id !== created.id),
         created,
-      ]))),
+      ])),
     );
   }
 
