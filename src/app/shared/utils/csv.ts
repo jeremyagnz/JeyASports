@@ -2,10 +2,12 @@
 export function toCsv(
   headers: readonly string[],
   rows: readonly (readonly (string | number)[])[],
-): string {
-  const escape = (value: string | number): string => `"${String(value).replace(/"/g, '""')}"`;
+  const escape = (value: string | number): string => {
+    const raw = String(value);
+    const safe = /^[=+\-@]/.test(raw) ? `'${raw}` : raw;
+    return `"${safe.replace(/"/g, '""')}"`;
+  };
   return [headers.map(escape).join(','), ...rows.map((row) => row.map(escape).join(','))].join('\n');
-}
 
 /** Triggers a client-side file download without leaking the object URL. */
 export function downloadFile(filename: string, content: string, mimeType: string): void {
