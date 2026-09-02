@@ -11,6 +11,7 @@ import {
 import { EmptyState } from '../../../shared/ui/empty-state';
 import { GamesFacade } from '../../games/games.facade';
 import { PlayersFacade } from '../../players/players.facade';
+import { PermissionService } from '../../../core/services/permission.service';
 import { LineupBuilder } from '../components/lineup-builder';
 import { GameDayFacade } from '../game-day.facade';
 
@@ -29,6 +30,7 @@ export class GameDayPage {
   readonly facade = inject(GameDayFacade);
   readonly players = inject(PlayersFacade);
   readonly gamesFacade = inject(GamesFacade);
+  readonly permissions = inject(PermissionService);
 
   readonly id = input.required<string>();
 
@@ -59,6 +61,9 @@ export class GameDayPage {
   }
 
   saveLineup(entries: readonly LineupEntry[]): void {
+    if (!this.permissions.canManageStats()) {
+      return;
+    }
     this.facade.saveLineup(entries);
   }
 

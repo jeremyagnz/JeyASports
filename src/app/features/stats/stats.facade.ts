@@ -1,5 +1,5 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { forkJoin, Observable, map } from 'rxjs';
 import { SeasonContextService } from '../../core/context/season-context.service';
 import { TeamContextService } from '../../core/context/team-context.service';
 import { toAppError } from '../../core/errors/app-error';
@@ -124,25 +124,22 @@ export class StatsFacade {
       }
     };
 
-    this.statsQuery.battingSeasonTotals(query).subscribe({
-      next: (lines) => {
-        if (this.latest.isCurrent(token)) {
-          this.battingState.set(lines);
-          this.loadingState.set(false);
+    forkJoin({
+      batting: this.statsQuery.battingSeasonTotals(query),
+      pitching: this.statsQuery.pitchingSeasonTotals(query),
+      fielding: this.statsQuery.fieldingSeasonTotals(query),
+      team: this.statsQuery.teamSeasonTotals(query),
+    }).subscribe({
+      next: ({ batting, pitching, fielding, team }) => {
+        if (!this.latest.isCurrent(token)) {
+          return;
         }
+        this.battingState.set(batting);
+        this.pitchingState.set(pitching);
+        this.fieldingState.set(fielding);
+        this.teamState.set(team);
+        this.loadingState.set(false);
       },
-      error: fail,
-    });
-    this.statsQuery.pitchingSeasonTotals(query).subscribe({
-      next: (lines) => this.latest.isCurrent(token) && this.pitchingState.set(lines),
-      error: fail,
-    });
-    this.statsQuery.fieldingSeasonTotals(query).subscribe({
-      next: (lines) => this.latest.isCurrent(token) && this.fieldingState.set(lines),
-      error: fail,
-    });
-    this.statsQuery.teamSeasonTotals(query).subscribe({
-      next: (totals) => this.latest.isCurrent(token) && this.teamState.set(totals),
       error: fail,
     });
   }

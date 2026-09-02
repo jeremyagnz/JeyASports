@@ -4,6 +4,10 @@
   margin-bottom: 0.5rem;
 }
 
+.hidden {
+  display: none;
+}
+
 .lineup__row {
   display: grid;
   grid-template-columns: 2rem 1fr 150px;

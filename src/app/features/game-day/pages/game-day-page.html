@@ -41,6 +41,7 @@
       <app-lineup-builder
         [players]="activePlayers()"
         [entries]="facade.entries()"
+        [editable]="permissions.canManageStats()"
         (save)="saveLineup($event)"
       />
     </section>
@@ -56,7 +57,7 @@
       } @else {
         <mat-form-field appearance="outline">
           <mat-label>Bateadora</mat-label>
-          <mat-select [value]="selectedBatterId()" (valueChange)="batterId.set($event)">
+          <mat-select [value]="selectedBatterId()" [disabled]="!permissions.canManageStats()" (valueChange)="batterId.set($event)">
             @for (entry of facade.entries(); track entry.playerId) {
               <mat-option [value]="entry.playerId">
                 {{ entry.battingOrder }}. {{ playerName(entry.playerId) }}
@@ -67,7 +68,7 @@
 
         <mat-form-field appearance="outline">
           <mat-label>Resultado</mat-label>
-          <mat-select [value]="result()" (valueChange)="result.set($event)">
+          <mat-select [value]="result()" [disabled]="!permissions.canManageStats()" (valueChange)="result.set($event)">
             @for (play of playResults; track play) {
               <mat-option [value]="play">{{ playResultLabels[play] }}</mat-option>
             }
@@ -77,32 +78,32 @@
         <div class="game-day__counters">
           <mat-form-field appearance="outline">
             <mat-label>Carreras impulsadas</mat-label>
-            <input matInput type="number" min="0" [value]="rbi()" (input)="rbi.set(toNumber($event))" />
+            <input matInput type="number" min="0" [disabled]="!permissions.canManageStats()" [value]="rbi()" (input)="rbi.set(toNumber($event))" />
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Carreras anotadas</mat-label>
-            <input matInput type="number" min="0" [value]="runs()" (input)="runs.set(toNumber($event))" />
+            <input matInput type="number" min="0" [disabled]="!permissions.canManageStats()" [value]="runs()" (input)="runs.set(toNumber($event))" />
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Outs en la jugada</mat-label>
-            <input matInput type="number" min="0" max="3" [value]="outs()" (input)="outs.set(toNumber($event))" />
+            <input matInput type="number" min="0" max="3" [disabled]="!permissions.canManageStats()" [value]="outs()" (input)="outs.set(toNumber($event))" />
           </mat-form-field>
         </div>
 
         <div class="game-day__actions">
-          <button matButton="filled" (click)="record()">
+          <button matButton="filled" [disabled]="!permissions.canManageStats()" (click)="record()">
             <mat-icon>add</mat-icon>
             Registrar jugada
           </button>
-          <button matButton (click)="facade.undoLastPlay()" [disabled]="facade.plays().length === 0">
+          <button matButton [disabled]="!permissions.canManageStats() || facade.plays().length === 0" (click)="facade.undoLastPlay()">
             <mat-icon>undo</mat-icon>
             Deshacer
           </button>
-          <button matButton="outlined" (click)="facade.addOpponentRuns(1)">
+          <button matButton="outlined" [disabled]="!permissions.canManageStats()" (click)="facade.addOpponentRuns(1)">
             <mat-icon>exposure_plus_1</mat-icon>
             Carrera rival
           </button>
-          <button matButton="outlined" (click)="facade.finalize()">
+          <button matButton="outlined" [disabled]="!permissions.canManageStats()" (click)="facade.finalize()">
             <mat-icon>flag</mat-icon>
             Finalizar juego
           </button>

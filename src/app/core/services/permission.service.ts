@@ -28,6 +28,7 @@ export class PermissionService {
 
   readonly canManagePlayers = computed(() => this.can('players.manage'));
   readonly canManageGames = computed(() => this.can('games.manage'));
+  readonly canManageStats = computed(() => this.can('stats.manage'));
   readonly canManageSeasons = computed(() => this.can('seasons.manage'));
   readonly canManageTeam = computed(() => this.can('team.manage'));
   readonly canManageMembers = computed(() => this.can('members.manage'));

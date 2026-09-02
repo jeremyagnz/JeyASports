@@ -23,6 +23,7 @@ export class LineupBuilder {
   readonly players = input.required<readonly Player[]>();
   readonly entries = input.required<readonly LineupEntry[]>();
   readonly slots = input(10);
+  readonly editable = input(true);
   readonly save = output<readonly LineupEntry[]>();
 
   readonly positions = Object.keys(POSITION_LABELS) as Position[];
@@ -53,7 +54,26 @@ export class LineupBuilder {
     return new Set(used).size !== used.length;
   });
 
+  readonly duplicatePosition = computed(() => {
+    const used = this.rows()
+      .map((row) => row.position)
+      .filter((position) => position !== 'EP');
+    return new Set(used).size !== used.length;
+  });
+
   readonly incomplete = computed(() => this.rows().some((row) => row.playerId === ''));
+
+  availablePlayers(index: number): readonly Player[] {
+    const selectedElsewhere = new Set(
+      this.rows()
+        .filter((_, rowIndex) => rowIndex !== index)
+        .map((row) => row.playerId)
+        .filter(Boolean),
+    );
+    return this.players().filter(
+      (player) => player.id === this.rows()[index]?.playerId || !selectedElsewhere.has(player.id),
+    );
+  }
 
   setPlayer(index: number, playerId: string): void {
     this.patch(index, { playerId });
@@ -64,7 +84,7 @@ export class LineupBuilder {
   }
 
   emitSave(): void {
-    if (this.duplicatePlayer() || this.incomplete()) {
+    if (this.duplicatePlayer() || this.duplicatePosition() || this.incomplete()) {
       return;
     }
     this.save.emit(
@@ -75,6 +95,24 @@ export class LineupBuilder {
         isStarter: true,
         substitutionOf: null,
       })),
+    );
+  }
+
+  addExtra(): void {
+    this.draft.set([
+      ...this.rows(),
+      { battingOrder: this.rows().length + 1, playerId: '', position: 'EP' },
+    ]);
+  }
+
+  removeRow(index: number): void {
+    if (this.rows().length <= 1) {
+      return;
+    }
+    this.draft.set(
+      this.rows()
+        .filter((_, rowIndex) => rowIndex !== index)
+        .map((row, rowIndex) => ({ ...row, battingOrder: rowIndex + 1 })),
     );
   }
 
