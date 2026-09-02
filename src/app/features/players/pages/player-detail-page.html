@@ -1,7 +1,7 @@
 @if (player(); as player) {
   <a matButton routerLink="/app/players" class="detail__back">
     <mat-icon>arrow_back</mat-icon>
-    Jugadoras
+    Jugadores
   </a>
 
   <header class="detail__hero">
@@ -67,5 +67,5 @@
     </mat-tab>
   </mat-tab-group>
 } @else {
-  <app-empty-state icon="person_off" title="Jugadora no encontrada" />
+  <app-empty-state icon="person_off" title="Jugador no encontrado" />
 }

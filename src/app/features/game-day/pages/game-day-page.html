@@ -6,7 +6,7 @@
 @if (facade.game(); as game) {
   <header class="game-day__scoreboard">
     <div class="game-day__team">
-      <span>Nosotras</span>
+      <span>Nosotros</span>
       <strong class="app-numeric">{{ game.teamScore ?? 0 }}</strong>
       @if (permissions.canManageStats()) {
         <input matInput class="game-day__score-adjust" type="number" min="0"

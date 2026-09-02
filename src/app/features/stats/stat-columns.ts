@@ -7,7 +7,7 @@ export type PlayerNameResolver = (playerId: string) => string;
 
 export function battingColumns(nameOf: PlayerNameResolver): StatColumn<BattingStatLine>[] {
   return [
-    { key: 'player', label: 'Jugadora', value: (row) => nameOf(row.playerId), sticky: true },
+    { key: 'player', label: 'Jugador', value: (row) => nameOf(row.playerId), sticky: true },
     { key: 'gp', label: 'JJ', tooltip: 'Juegos jugados', value: (row) => row.gp },
     { key: 'pa', label: 'AP', tooltip: 'Apariciones al plato', value: (row) => battingRates(row).pa },
     { key: 'ab', label: 'VB', tooltip: 'Veces al bate', value: (row) => row.ab },
@@ -49,7 +49,7 @@ export function battingColumns(nameOf: PlayerNameResolver): StatColumn<BattingSt
 
 export function pitchingColumns(nameOf: PlayerNameResolver): StatColumn<PitchingStatLine>[] {
   return [
-    { key: 'player', label: 'Lanzadora', value: (row) => nameOf(row.playerId), sticky: true },
+    { key: 'player', label: 'Lanzador', value: (row) => nameOf(row.playerId), sticky: true },
     { key: 'g', label: 'J', value: (row) => row.g },
     { key: 'gs', label: 'JI', tooltip: 'Juegos iniciados', value: (row) => row.gs },
     { key: 'w', label: 'G', tooltip: 'Ganados', value: (row) => row.w },
@@ -84,7 +84,7 @@ export function pitchingColumns(nameOf: PlayerNameResolver): StatColumn<Pitching
 
 export function fieldingColumns(nameOf: PlayerNameResolver): StatColumn<FieldingStatLine>[] {
   return [
-    { key: 'player', label: 'Jugadora', value: (row) => nameOf(row.playerId), sticky: true },
+    { key: 'player', label: 'Jugador', value: (row) => nameOf(row.playerId), sticky: true },
     { key: 'position', label: 'POS', value: (row) => row.position },
     { key: 'g', label: 'J', value: (row) => row.g },
     {

@@ -1,12 +1,12 @@
 <app-page-header
   eyebrow="Roster"
-  title="Jugadoras"
+  title="Jugadores"
   subtitle="Perfil, posiciones y estado de cada integrante del equipo."
 >
   @if (permissions.canManagePlayers()) {
     <button matButton="filled" (click)="openCreate()">
       <mat-icon>person_add</mat-icon>
-      Nueva jugadora
+      Nuevo jugador
     </button>
   }
 </app-page-header>
@@ -55,8 +55,8 @@
 @if (facade.visible().length === 0 && !facade.loading()) {
   <app-empty-state
     icon="groups"
-    title="Sin jugadoras"
-    message="Ajusta los filtros o crea la primera jugadora del equipo."
+    title="Sin jugadores"
+    message="Ajusta los filtros o crea el primer jugador del equipo."
   />
 } @else {
   <div class="players__grid">
