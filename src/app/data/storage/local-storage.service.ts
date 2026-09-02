@@ -42,9 +42,8 @@ export class LocalStorageService {
       return;
     }
     try {
-      storage.setItem(this.key(name), JSON.stringify(value));
     } catch (error) {
-      throw new AppError('STORAGE', 'Local storage is full or unavailable.', error);
+      throw new AppError('STORAGE', 'El almacenamiento local está lleno o no está disponible.', error);
     }
   }
 
