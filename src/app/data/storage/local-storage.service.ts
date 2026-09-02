@@ -36,6 +36,11 @@ export class LocalStorageService {
     }
   }
 
+  write<T>(name: string, value: T): void {
+    const storage = this.storage;
+    if (!storage) {
+      throw new AppError('STORAGE', 'El almacenamiento local no está disponible.');
+    }
     try {
       storage.setItem(this.key(name), JSON.stringify(value));
     } catch (error) {
