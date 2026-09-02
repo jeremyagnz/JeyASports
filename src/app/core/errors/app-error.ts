@@ -12,7 +12,7 @@ export class AppError extends Error {
   }
 
   static notFound(entity: string, id: string): AppError {
-    return new AppError('NOT_FOUND', `${entity} "${id}" was not found.`);
+    return new AppError('NOT_FOUND', `${entity} "${id}" no fue encontrado.`);
   }
 
   static validation(message: string): AppError {
