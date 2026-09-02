@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
@@ -11,6 +12,7 @@ import { EmptyState } from '../../../shared/ui/empty-state';
 import { PageHeader } from '../../../shared/ui/page-header';
 import { AdministrationFacade, TeamMember } from '../administration.facade';
 import { AdministrationNav } from '../components/administration-nav';
+import { MemberFormDialog } from '../components/member-form-dialog';
 
 @Component({
   selector: 'app-members-page',
@@ -25,8 +27,21 @@ export class MembersPage {
   readonly facade = inject(AdministrationFacade);
   private readonly auth = inject(AuthService);
   private readonly confirm = inject(ConfirmDialogService);
+  private readonly dialog = inject(MatDialog);
 
   readonly roles: readonly TeamRole[] = ['OWNER', 'ADMIN', 'VIEWER'];
+
+  add(): void {
+    this.dialog.open(MemberFormDialog, { data: { roles: this.roles } }).afterClosed().subscribe((result) => {
+      if (!result) {
+        return;
+      }
+      this.facade.addMember(result.email, result.role).subscribe({
+        next: () => this.facade.notifySuccess('Miembro agregado al equipo.'),
+        error: (error: unknown) => this.facade.notifyError(error),
+      });
+    });
+  }
 
   isSelf(member: TeamMember): boolean {
     return member.membership.userId === this.auth.currentUser()?.id;
