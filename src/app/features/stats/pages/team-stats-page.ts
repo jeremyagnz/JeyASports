@@ -87,11 +87,11 @@ export class TeamStatsPage {
         return;
       }
       if (group === 'batting') {
-        this.facade.updateBatting(row.id, patch as UpdateDto<BattingStatLine>).subscribe();
+        this.facade.updateSeasonBatting(row.playerId, patch as UpdateDto<BattingStatLine>).subscribe();
       } else if (group === 'pitching') {
-        this.facade.updatePitching(row.id, patch as UpdateDto<PitchingStatLine>).subscribe();
+        this.facade.updateSeasonPitching(row.playerId, patch as UpdateDto<PitchingStatLine>).subscribe();
       } else {
-        this.facade.updateFielding(row.id, patch as UpdateDto<FieldingStatLine>).subscribe();
+        this.facade.updateSeasonFielding(row.playerId, patch as UpdateDto<FieldingStatLine>).subscribe();
       }
     });
   }

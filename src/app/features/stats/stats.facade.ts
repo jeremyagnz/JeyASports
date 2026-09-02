@@ -1,5 +1,5 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { forkJoin, Observable, map } from 'rxjs';
+import { forkJoin, Observable, map, switchMap } from 'rxjs';
 import { SeasonContextService } from '../../core/context/season-context.service';
 import { TeamContextService } from '../../core/context/team-context.service';
 import { toAppError } from '../../core/errors/app-error';
@@ -109,6 +109,39 @@ export class StatsFacade {
 
   updateFielding(id: string, patch: UpdateDto<FieldingStatLine>): Observable<FieldingStatLine> {
     return this.fieldingRepository.update(id, patch);
+  }
+
+  updateSeasonBatting(
+    playerId: string,
+    patch: UpdateDto<BattingStatLine>,
+  ): Observable<BattingStatLine> {
+    return this.scopedQuery((query) =>
+      this.statsQuery.battingGameLog({ ...query, playerId }).pipe(
+        switchMap((lines) => this.battingRepository.update(lines[0]?.id ?? '', patch)),
+      ),
+    );
+  }
+
+  updateSeasonPitching(
+    playerId: string,
+    patch: UpdateDto<PitchingStatLine>,
+  ): Observable<PitchingStatLine> {
+    return this.scopedQuery((query) =>
+      this.statsQuery.pitchingGameLog({ ...query, playerId }).pipe(
+        switchMap((lines) => this.pitchingRepository.update(lines[0]?.id ?? '', patch)),
+      ),
+    );
+  }
+
+  updateSeasonFielding(
+    playerId: string,
+    patch: UpdateDto<FieldingStatLine>,
+  ): Observable<FieldingStatLine> {
+    return this.scopedQuery((query) =>
+      this.statsQuery.fieldingGameLog({ ...query, playerId }).pipe(
+        switchMap((lines) => this.fieldingRepository.update(lines[0]?.id ?? '', patch)),
+      ),
+    );
   }
 
   private scopedQuery<T>(

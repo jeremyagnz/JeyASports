@@ -63,6 +63,7 @@ export interface StatsQueryRepository {
   teamSeasonTotals(query: StatsQuery): Observable<TeamStatLine>;
   battingGameLog(query: Required<StatsQuery>): Observable<readonly BattingStatLine[]>;
   pitchingGameLog(query: Required<StatsQuery>): Observable<readonly PitchingStatLine[]>;
+  fieldingGameLog(query: Required<StatsQuery>): Observable<readonly FieldingStatLine[]>;
   gameBoxScore(
     teamId: string,
     gameId: string,
