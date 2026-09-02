@@ -34,6 +34,8 @@
       [columns]="battingColumns()"
       [rows]="facade.batting()"
       initialSort="ops"
+      [clickable]="permissions.canManageStats()"
+      (rowClick)="editStats('batting', $event)"
     />
   </mat-tab>
   <mat-tab label="Pitcheo">
@@ -41,6 +43,8 @@
       [columns]="pitchingColumns()"
       [rows]="facade.pitching()"
       initialSort="ip"
+      [clickable]="permissions.canManageStats()"
+      (rowClick)="editStats('pitching', $event)"
     />
   </mat-tab>
   <mat-tab label="Defensa">
@@ -48,6 +52,8 @@
       [columns]="fieldingColumns()"
       [rows]="facade.fielding()"
       initialSort="fpct"
+      [clickable]="permissions.canManageStats()"
+      (rowClick)="editStats('fielding', $event)"
     />
   </mat-tab>
 </mat-tab-group>
