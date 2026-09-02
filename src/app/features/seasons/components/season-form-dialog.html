@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>{{ season ? 'Editar temporada' : 'Nueva temporada' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="season-form">
+    <mat-form-field appearance="outline" class="season-form__full">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>El nombre es obligatorio</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Año</mat-label>
+      <input matInput type="number" formControlName="year" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Estado</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="UPCOMING">Próxima</mat-option>
+        <mat-option value="ACTIVE">Activa</mat-option>
+        <mat-option value="COMPLETED">Terminada</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Inicio</mat-label>
+      <input matInput type="date" formControlName="startDate" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fin</mat-label>
+      <input matInput type="date" formControlName="endDate" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Mínimo de apariciones al bat</mat-label>
+      <input matInput type="number" formControlName="qualifyingPlateAppearances" min="0" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Mínimo de outs lanzados</mat-label>
+      <input matInput type="number" formControlName="qualifyingOuts" min="0" />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button matButton (click)="dialogRef.close()">Cancelar</button>
+  <button matButton="filled" (click)="submit()">Guardar</button>
+</mat-dialog-actions>

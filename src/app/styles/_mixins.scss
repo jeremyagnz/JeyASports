@@ -1,0 +1,10 @@
+@mixin surface-card {
+  background: var(--app-color-surface-raised);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-md);
+}
+
+@mixin scroll-shadow {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}

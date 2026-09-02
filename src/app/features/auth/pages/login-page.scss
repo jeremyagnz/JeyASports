@@ -1,0 +1,104 @@
+.login {
+  display: grid;
+  grid-template-columns: 1fr min(440px, 100%);
+  gap: 3rem;
+  align-items: center;
+  min-height: 100vh;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.login__hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  margin: 1rem 0 0.5rem;
+  letter-spacing: -0.03em;
+}
+
+.login__hero p {
+  color: var(--mat-sys-on-surface-variant);
+  max-width: 42ch;
+}
+
+.login__hero ul {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.login__hero li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.login__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--app-radius-md);
+  background: var(--app-color-accent);
+  color: #08121a;
+  font-weight: 900;
+  font-size: 1.3rem;
+}
+
+.login__card {
+  background: var(--app-color-surface-raised);
+}
+
+.login__field {
+  width: 100%;
+}
+
+.login__submit {
+  width: 100%;
+}
+
+.login__error {
+  color: var(--app-color-negative);
+  margin: 0 0 0.75rem;
+}
+
+.login__divider {
+  margin: 1.5rem 0 0.75rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.login__accounts {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.login__accounts button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: auto;
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+}
+
+.login__account-label {
+  font-weight: 700;
+}
+
+.login__account-description {
+  font-size: 0.75rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+@media (max-width: 900px) {
+  .login {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}

@@ -1,0 +1,54 @@
+<div class="lineup">
+  @for (row of rows(); track row.battingOrder; let index = $index) {
+    <div class="lineup__row">
+      <span class="lineup__order app-numeric">{{ row.battingOrder }}</span>
+      <mat-form-field appearance="outline" class="lineup__player">
+        <mat-label>Jugadora</mat-label>
+        <mat-select [value]="row.playerId" [disabled]="!editable()" (valueChange)="setPlayer(index, $event)">
+          <mat-option value="">Vacío</mat-option>
+          @for (player of availablePlayers(index); track player.id) {
+            <mat-option [value]="player.id">
+              #{{ player.jerseyNumber }} {{ player.firstName }} {{ player.lastName }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="lineup__position">
+        <mat-label>Posición</mat-label>
+        <mat-select [value]="row.position" [disabled]="!editable()" (valueChange)="setPosition(index, $event)">
+          @for (position of positions; track position) {
+            <mat-option [value]="position">{{ positionLabels[position] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      @if (editable() && rows().length > slots()) {
+        <button matIconButton type="button" aria-label="Quitar jugadora del lineup" (click)="removeRow(index)">
+          <mat-icon>remove</mat-icon>
+        </button>
+      }
+    </div>
+  }
+</div>
+
+@if (duplicatePlayer()) {
+  <p class="lineup__error">Hay jugadoras repetidas en el orden al bat.</p>
+}
+@if (duplicatePosition()) {
+  <p class="lineup__error">No se puede repetir una posición; usa EP para las jugadoras extras.</p>
+}
+
+@if (editable()) {
+  <button matButton type="button" (click)="addExtra()">
+    <mat-icon>person_add</mat-icon>
+    Agregar extra
+  </button>
+}
+<button
+  matButton="filled"
+  [disabled]="duplicatePlayer() || duplicatePosition() || incomplete()"
+  [class.hidden]="!editable()"
+  (click)="emitSave()"
+>
+  <mat-icon>save</mat-icon>
+  Guardar lineup
+</button>

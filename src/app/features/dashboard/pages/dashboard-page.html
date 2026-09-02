@@ -1,0 +1,79 @@
+<app-page-header
+  [eyebrow]="seasonContext.activeSeason()?.name ?? 'Temporada'"
+  [title]="teamContext.activeTeam()?.name ?? 'Panel'"
+  subtitle="Resumen de la temporada activa."
+/>
+
+<section class="dashboard__cards">
+  <app-stat-card label="Récord" [value]="stats.record()" hint="Ganados-Perdidos" />
+  <app-stat-card label="Promedio del equipo" [value]="teamAverage()" hint="AVG colectivo" />
+  <app-stat-card label="Carreras por juego" [value]="runsPerGame()" hint="Ofensiva" />
+  <app-stat-card
+    label="Juegos jugados"
+    [value]="games.playedGames().length.toString()"
+    [hint]="games.upcomingGames().length + ' por jugar'"
+  />
+</section>
+
+<section class="dashboard__grid">
+  <article class="dashboard__panel">
+    <h2>Próximo juego</h2>
+    @if (games.nextGame(); as next) {
+      <p class="dashboard__headline">{{ games.describe(next) }}</p>
+      <p class="dashboard__meta">{{ formatDate(next.date) }} · {{ next.time }}</p>
+      <a matButton="outlined" [routerLink]="['/app/games', next.id]">Ver detalle</a>
+    } @else {
+      <app-empty-state icon="event_available" title="Sin juegos programados" />
+    }
+  </article>
+
+  <article class="dashboard__panel">
+    <h2>Último resultado</h2>
+    @if (games.lastGame(); as last) {
+      <p class="dashboard__headline">
+        <span class="dashboard__result" [class]="'is-' + last.result">{{ last.result }}</span>
+        {{ scoreline(last) }}
+      </p>
+      <p class="dashboard__meta">{{ games.describe(last) }} · {{ formatDate(last.date) }}</p>
+      <a matButton="outlined" [routerLink]="['/app/games', last.id]">Ver box score</a>
+    } @else {
+      <app-empty-state icon="scoreboard" title="Sin resultados aún" />
+    }
+  </article>
+
+  <article class="dashboard__panel">
+    <h2>Mejores bateadores</h2>
+    @if (topPerformers().length === 0) {
+      <app-empty-state icon="leaderboard" title="Sin líderes calificados" />
+    } @else {
+      <ol class="dashboard__leaders">
+        @for (leader of topPerformers(); track leader.playerId) {
+          <li>
+            <a [routerLink]="['/app/players', leader.playerId]">{{ leader.playerName }}</a>
+            <span class="app-numeric">{{ leader.value | leaderValue: avgBoard()!.definition }}</span>
+          </li>
+        }
+      </ol>
+      <a matButton="outlined" routerLink="/app/leaders">Ver líderes</a>
+    }
+  </article>
+
+  <article class="dashboard__panel">
+    <h2>Juegos recientes</h2>
+    @if (recentGames().length === 0) {
+      <app-empty-state icon="history" title="Sin juegos jugados" />
+    } @else {
+      <ul class="dashboard__recent">
+        @for (game of recentGames(); track game.id) {
+          <li>
+            <a [routerLink]="['/app/games', game.id]">{{ games.describe(game) }}</a>
+            <span>
+              <span class="dashboard__result" [class]="'is-' + game.result">{{ game.result }}</span>
+              <span class="app-numeric">{{ scoreline(game) }}</span>
+            </span>
+          </li>
+        }
+      </ul>
+    }
+  </article>
+</section>

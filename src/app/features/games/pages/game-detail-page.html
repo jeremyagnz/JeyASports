@@ -1,0 +1,85 @@
+<a matButton routerLink="/app/games">
+  <mat-icon>arrow_back</mat-icon>
+  Juegos
+</a>
+
+@if (game(); as game) {
+  <header class="game__hero">
+    <div>
+      <p class="game__eyebrow">{{ formatDate(game.date) }} · {{ game.time }} · {{ venueName(game) }}</p>
+      <h1>{{ facade.describe(game) }}</h1>
+      <p class="game__status">{{ game.status }}</p>
+    </div>
+    @if (game.status === 'FINAL') {
+      <div class="game__score">
+        <span class="app-numeric">{{ game.teamScore }}</span>
+        <span class="game__dash">-</span>
+        <span class="app-numeric">{{ game.opponentScore }}</span>
+      </div>
+    }
+    @if (permissions.canManageGames()) {
+      <a matButton="filled" [routerLink]="['/app/games', game.id, 'live']">
+        <mat-icon>play_circle</mat-icon>
+        Game day
+      </a>
+    }
+  </header>
+
+  @if (game.status === 'FINAL') {
+    <div class="app-table-wrapper game__linescore">
+      <table class="app-stat-table">
+        <thead>
+          <tr>
+            <th>Equipo</th>
+            @for (inning of innings(); track inning) {
+              <th>{{ inning + 1 }}</th>
+            }
+            <th>C</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Nosotras</td>
+            @for (inning of innings(); track inning) {
+              <td>{{ game.teamLineScore[inning] ?? 0 }}</td>
+            }
+            <td>{{ game.teamScore }}</td>
+          </tr>
+          <tr>
+            <td>Rival</td>
+            @for (inning of innings(); track inning) {
+              <td>{{ game.opponentLineScore[inning] ?? 0 }}</td>
+            }
+            <td>{{ game.opponentScore }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <mat-tab-group>
+    <mat-tab label="Bateo">
+      <app-stat-table
+        [columns]="battingColumns()"
+        [rows]="battingRows()"
+        emptyMessage="Sin líneas de bateo para este juego."
+      />
+    </mat-tab>
+    <mat-tab label="Pitcheo">
+      <app-stat-table
+        [columns]="pitchingColumns()"
+        [rows]="pitchingRows()"
+        emptyMessage="Sin líneas de pitcheo para este juego."
+      />
+    </mat-tab>
+    <mat-tab label="Defensa">
+      <app-stat-table
+        [columns]="fieldingColumns()"
+        [rows]="fieldingRows()"
+        emptyMessage="Sin líneas defensivas para este juego."
+      />
+    </mat-tab>
+  </mat-tab-group>
+} @else {
+  <app-empty-state icon="event_busy" title="Juego no encontrado" />
+}

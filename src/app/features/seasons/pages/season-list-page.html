@@ -1,0 +1,54 @@
+<app-page-header
+  eyebrow="Equipo"
+  title="Temporadas"
+  subtitle="Define los periodos de competencia y los umbrales de calificación para líderes."
+>
+  <button matButton="filled" (click)="openCreate()">
+    <mat-icon>add</mat-icon>
+    Nueva temporada
+  </button>
+</app-page-header>
+
+@if (facade.seasons().length === 0) {
+  <app-empty-state
+    icon="calendar_today"
+    title="Sin temporadas"
+    message="Crea una temporada para poder registrar juegos y estadísticas."
+  />
+} @else {
+  <div class="seasons__list">
+    @for (season of facade.seasons(); track season.id) {
+      <article class="season-row" [class.season-row--current]="season.isCurrent">
+        <div>
+          <h2>
+            {{ season.name }}
+            @if (season.isCurrent) {
+              <span class="season-row__badge">Actual</span>
+            }
+          </h2>
+          <p>{{ formatDate(season.startDate) }} — {{ formatDate(season.endDate) }}</p>
+        </div>
+        <div class="season-row__meta">
+          <span>{{ season.status }}</span>
+          <span class="app-numeric">{{ season.qualifyingPlateAppearances }} PA mín.</span>
+        </div>
+        <div class="season-row__actions">
+          @if (!season.isCurrent) {
+            <button matIconButton matTooltip="Marcar como actual" (click)="setCurrent(season)">
+              <mat-icon>flag</mat-icon>
+            </button>
+          }
+          <button matIconButton matTooltip="Ver estadísticas" (click)="facade.select(season.id)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button matIconButton matTooltip="Editar" (click)="openEdit(season)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button matIconButton matTooltip="Eliminar" (click)="remove(season)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </article>
+    }
+  </div>
+}

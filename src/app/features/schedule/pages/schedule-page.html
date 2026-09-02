@@ -1,0 +1,56 @@
+<app-page-header
+  eyebrow="Temporada"
+  title="Calendario"
+  subtitle="Juegos agrupados por mes, con resultados y sedes."
+>
+  @if (permissions.canManageGames()) {
+    <button matButton="filled" (click)="actions.openCreate()">
+      <mat-icon>add</mat-icon>
+      Agendar juego
+    </button>
+  }
+</app-page-header>
+
+<mat-button-toggle-group
+  class="schedule__filter"
+  [value]="filter()"
+  (change)="setFilter($event.value)"
+  hideSingleSelectionIndicator
+>
+  <mat-button-toggle value="all">Todos</mat-button-toggle>
+  <mat-button-toggle value="upcoming">Próximos</mat-button-toggle>
+  <mat-button-toggle value="played">Jugados</mat-button-toggle>
+</mat-button-toggle-group>
+
+@if (months().length === 0) {
+  <app-empty-state icon="calendar_month" title="Sin juegos en el calendario" />
+} @else {
+  @for (month of months(); track month.key) {
+    <section class="schedule__month">
+      <h2>{{ month.label }}</h2>
+      <ul>
+        @for (game of month.games; track game.id) {
+          <li class="schedule__game">
+            <span class="schedule__date">{{ formatDate(game.date) }}</span>
+            <a class="schedule__match" [routerLink]="['/app/games', game.id]">
+              {{ facade.describe(game) }}
+            </a>
+            <span class="schedule__venue">{{ venueName(game) }}</span>
+            <span class="schedule__outcome app-numeric">
+              @if (game.status === 'FINAL') {
+                {{ game.result }} {{ game.teamScore }}-{{ game.opponentScore }}
+              } @else {
+                {{ game.time }}
+              }
+            </span>
+            @if (permissions.canManageGames()) {
+              <button matIconButton matTooltip="Editar" (click)="actions.openEdit(game)">
+                <mat-icon>edit</mat-icon>
+              </button>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  }
+}

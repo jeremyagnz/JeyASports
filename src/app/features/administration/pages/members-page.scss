@@ -1,0 +1,33 @@
+.members__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.members__list li {
+  display: grid;
+  grid-template-columns: 1fr 160px auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-md);
+  background: var(--app-color-surface-raised);
+}
+
+.members__identity p {
+  margin: 0.1rem 0 0;
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+@media (max-width: 640px) {
+  .members__list li {
+    grid-template-columns: 1fr auto;
+  }
+  .members__role {
+    grid-column: 1 / -1;
+  }
+}

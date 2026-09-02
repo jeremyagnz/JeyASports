@@ -1,0 +1,64 @@
+<app-page-header
+  eyebrow="Configuración"
+  title="Perfil del equipo"
+  subtitle="Identidad visual y reglas de juego aplicadas a toda la plataforma."
+/>
+
+<app-team-settings-nav />
+
+<form [formGroup]="form" class="team-form" (ngSubmit)="save()">
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="name" />
+    @if (form.controls.name.hasError('required')) {
+      <mat-error>El nombre es obligatorio</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Abreviatura</mat-label>
+    <input matInput formControlName="abbreviation" maxlength="5" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Ciudad</mat-label>
+    <input matInput formControlName="city" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Liga</mat-label>
+    <input matInput formControlName="league" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>División</mat-label>
+    <input matInput formControlName="division" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Entradas reglamentarias</mat-label>
+    <input matInput type="number" formControlName="regulationInnings" min="1" max="15" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Jugadores en el lineup</mat-label>
+    <input matInput type="number" formControlName="fieldersPerLineup" min="9" max="12" />
+  </mat-form-field>
+
+  <label class="team-form__color">
+    <span>Color primario</span>
+    <input type="color" formControlName="primaryColor" />
+  </label>
+
+  <label class="team-form__color">
+    <span>Color secundario</span>
+    <input type="color" formControlName="secondaryColor" />
+  </label>
+
+  <div class="team-form__actions">
+    <button matButton="filled" type="submit">
+      <mat-icon>save</mat-icon>
+      Guardar cambios
+    </button>
+  </div>
+</form>

@@ -1,0 +1,53 @@
+<app-page-header
+  eyebrow="Temporada"
+  title="Estadísticas del equipo"
+  subtitle="Totales acumulados a partir de las líneas de cada juego."
+>
+  <button matButton="outlined" (click)="compare()">
+    <mat-icon>compare_arrows</mat-icon>
+    Comparar
+  </button>
+  <button matButton="filled" (click)="exportCsv()">
+    <mat-icon>download</mat-icon>
+    Exportar CSV
+  </button>
+</app-page-header>
+
+@if (facade.teamTotals(); as totals) {
+  <div class="stats__summary">
+    <app-stat-card label="Récord" [value]="facade.record()" hint="G-P" />
+    <app-stat-card label="Carreras a favor" [value]="totals.runsScored" />
+    <app-stat-card label="Carreras en contra" [value]="totals.runsAllowed" />
+    <app-stat-card label="AVG equipo" [value]="teamAverage()" />
+    <app-stat-card label="OPS equipo" [value]="teamOps()" />
+    <app-stat-card label="Cuadrangulares" [value]="totals.batting.hr" />
+  </div>
+}
+
+@if (facade.loading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<mat-tab-group (selectedIndexChange)="onTabChange($event)">
+  <mat-tab label="Bateo">
+    <app-stat-table
+      [columns]="battingColumns()"
+      [rows]="facade.batting()"
+      initialSort="ops"
+    />
+  </mat-tab>
+  <mat-tab label="Pitcheo">
+    <app-stat-table
+      [columns]="pitchingColumns()"
+      [rows]="facade.pitching()"
+      initialSort="ip"
+    />
+  </mat-tab>
+  <mat-tab label="Defensa">
+    <app-stat-table
+      [columns]="fieldingColumns()"
+      [rows]="facade.fielding()"
+      initialSort="fpct"
+    />
+  </mat-tab>
+</mat-tab-group>
