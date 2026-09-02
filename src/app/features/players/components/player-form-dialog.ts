@@ -27,6 +27,9 @@ export type PlayerFormResult = Omit<CreateDto<Player>, 'teamId'>;
     .player-form__full {
       grid-column: 1 / -1;
     }
+    mat-form-field {
+      min-width: 0;
+    }
     @media (max-width: 600px) {
       .player-form {
         grid-template-columns: 1fr;

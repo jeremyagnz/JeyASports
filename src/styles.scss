@@ -28,6 +28,31 @@ body {
   box-sizing: border-box;
 }
 
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+.mat-mdc-form-field {
+  min-width: 0;
+}
+
+.mat-mdc-text-field-wrapper,
+.mat-mdc-form-field-infix {
+  min-width: 0;
+}
+
+.mat-mdc-form-field-infix {
+  min-height: 3.5rem;
+}
+
+.mat-mdc-form-field input,
+.mat-mdc-form-field textarea {
+  line-height: 1.4;
+}
+
 .app-numeric {
   font-family: var(--app-font-numeric);
   font-variant-numeric: tabular-nums;

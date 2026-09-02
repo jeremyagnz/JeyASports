@@ -11,6 +11,8 @@
   gap: 0.35rem;
   background: var(--app-color-surface-sunken);
   border-bottom: 1px solid var(--app-color-border);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .shell__brand {
@@ -37,6 +39,7 @@
 .shell__brand-name {
   font-weight: 800;
   letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
 .shell__spacer {

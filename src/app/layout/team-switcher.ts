@@ -57,6 +57,10 @@ import { TeamContextService } from '../core/context/team-context.service';
     }
     .switcher__name {
       font-weight: 600;
+      max-width: min(18rem, 22vw);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     @media (max-width: 720px) {
       .switcher__name {

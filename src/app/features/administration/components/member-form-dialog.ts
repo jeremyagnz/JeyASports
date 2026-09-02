@@ -50,7 +50,10 @@ export interface MemberFormResult {
       <button matButton="filled" (click)="submit()">Agregar</button>
     </mat-dialog-actions>
   `,
-  styles: `form { display: grid; gap: 0.5rem; min-width: min(420px, 78vw); }`,
+  styles: `
+    form { display: grid; gap: 0.5rem; width: min(420px, 78vw); max-width: 100%; }
+    mat-form-field { min-width: 0; }
+  `,
 })
 export class MemberFormDialog {
   private readonly formBuilder = inject(FormBuilder);
