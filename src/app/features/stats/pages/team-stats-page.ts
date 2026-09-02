@@ -66,14 +66,39 @@ export class TeamStatsPage {
     void this.router.navigate(['/app/stats/compare']);
   }
 
-  exportCsv(): void {
-    const columns = this.battingColumns();
-    const csv = toCsv(
-      columns.map((column) => column.label),
-      this.facade
-        .batting()
-        .map((row) => columns.map((column) => column.display?.(row) ?? column.value(row))),
-    );
-    downloadFile('estadisticas-bateo.csv', csv, 'text/csv');
+exportCsv(): void {
+  switch (this.facade.group()) {
+    case 'pitching': {
+      const columns = this.pitchingColumns();
+      const csv = toCsv(
+        columns.map((column) => column.label),
+        this.facade
+          .pitching()
+          .map((row) => columns.map((column) => column.display?.(row) ?? column.value(row))),
+      );
+      downloadFile('estadisticas-pitcheo.csv', csv, 'text/csv');
+      return;
+    }
+    case 'fielding': {
+      const columns = this.fieldingColumns();
+      const csv = toCsv(
+        columns.map((column) => column.label),
+        this.facade
+          .fielding()
+          .map((row) => columns.map((column) => column.display?.(row) ?? column.value(row))),
+      );
+      downloadFile('estadisticas-defensa.csv', csv, 'text/csv');
+      return;
+    }
+    default: {
+      const columns = this.battingColumns();
+      const csv = toCsv(
+        columns.map((column) => column.label),
+        this.facade
+          .batting()
+          .map((row) => columns.map((column) => column.display?.(row) ?? column.value(row))),
+      );
+      downloadFile('estadisticas-bateo.csv', csv, 'text/csv');
+    }
   }
 }
