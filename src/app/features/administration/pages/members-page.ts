@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { switchMap } from 'rxjs';
@@ -15,7 +16,7 @@ import { AdministrationNav } from '../components/administration-nav';
   selector: 'app-members-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatButtonModule, MatIconModule, MatSelectModule, EmptyState, PageHeader, AdministrationNav,
+    MatButtonModule, MatFormFieldModule, MatIconModule, MatSelectModule, EmptyState, PageHeader, AdministrationNav,
   ],
   templateUrl: './members-page.html',
   styleUrl: './members-page.scss',

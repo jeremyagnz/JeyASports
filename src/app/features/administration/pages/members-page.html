@@ -16,16 +16,18 @@
           <strong>{{ member.user?.displayName ?? 'Usuario' }}</strong>
           <p>{{ member.user?.email }}</p>
         </div>
-        <mat-select
-          class="members__role"
-          [value]="member.membership.role"
-          [disabled]="isSelf(member)"
-          (valueChange)="changeRole(member, $event)"
-        >
-          @for (role of roles; track role) {
-            <mat-option [value]="role">{{ role }}</mat-option>
-          }
-        </mat-select>
+        <mat-form-field appearance="outline" class="members__role" subscriptSizing="dynamic">
+          <mat-label>Rol</mat-label>
+          <mat-select
+            [value]="member.membership.role"
+            [disabled]="isSelf(member)"
+            (valueChange)="changeRole(member, $event)"
+          >
+            @for (role of roles; track role) {
+              <mat-option [value]="role">{{ role }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
         <button
           matIconButton
           [disabled]="isSelf(member)"
