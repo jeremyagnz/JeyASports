@@ -132,6 +132,11 @@
               <span class="app-numeric">{{ play.inning }}{{ play.half === 'TOP' ? '▲' : '▼' }}</span>
               <span>{{ playerName(play.playerId) }}</span>
               <strong>{{ playResultLabels[play.result] }}</strong>
+              @if (permissions.canManageStats()) {
+                <button matIconButton type="button" aria-label="Editar jugada" (click)="editPlay(play)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              }
             </li>
           }
         </ul>
