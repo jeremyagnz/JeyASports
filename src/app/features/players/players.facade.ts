@@ -1,5 +1,5 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { Observable, map, of, switchMap } from 'rxjs';
+import { Observable, map, of, switchMap, tap } from 'rxjs';
 import { SeasonContextService } from '../../core/context/season-context.service';
 import { TeamContextService } from '../../core/context/team-context.service';
 import { toAppError } from '../../core/errors/app-error';
@@ -120,11 +120,19 @@ export class PlayersFacade {
               .pipe(map(() => player))
           : of(player),
       ),
+      tap((created) => this.playersState.update((players) => [
+        ...players.filter((candidate) => candidate.id !== created.id),
+        created,
+      ])),
     );
   }
 
   update(id: string, patch: UpdateDto<Player>): Observable<Player> {
-    return this.players.update(id, patch);
+    return this.players.update(id, patch).pipe(
+      tap((updated) => this.playersState.update((players) =>
+        players.map((player) => player.id === updated.id ? updated : player),
+      )),
+    );
   }
 
   remove(id: string): Observable<void> {

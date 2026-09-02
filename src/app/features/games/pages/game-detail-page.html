@@ -62,6 +62,8 @@
       <app-stat-table
         [columns]="battingColumns()"
         [rows]="battingRows()"
+        [clickable]="permissions.canManageStats()"
+        (rowClick)="editStats('batting', $event)"
         emptyMessage="Sin líneas de bateo para este juego."
       />
     </mat-tab>
@@ -69,6 +71,8 @@
       <app-stat-table
         [columns]="pitchingColumns()"
         [rows]="pitchingRows()"
+        [clickable]="permissions.canManageStats()"
+        (rowClick)="editStats('pitching', $event)"
         emptyMessage="Sin líneas de pitcheo para este juego."
       />
     </mat-tab>
@@ -76,6 +80,8 @@
       <app-stat-table
         [columns]="fieldingColumns()"
         [rows]="fieldingRows()"
+        [clickable]="permissions.canManageStats()"
+        (rowClick)="editStats('fielding', $event)"
         emptyMessage="Sin líneas defensivas para este juego."
       />
     </mat-tab>

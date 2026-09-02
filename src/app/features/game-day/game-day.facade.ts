@@ -161,6 +161,7 @@ export class GameDayFacade {
     if (!game || !last) {
       return;
     }
+
     this.playEvents
       .remove(last.id)
       .pipe(
@@ -181,6 +182,31 @@ export class GameDayFacade {
       });
   }
 
+  updatePlay(
+    id: string,
+    patch: Partial<Pick<PlayEvent, 'inning' | 'half' | 'result' | 'rbi' | 'runsScored' | 'outs'>>,
+  ): void {
+    const game = this.gameState();
+    const current = this.plays().find((play) => play.id === id);
+    if (!game || !current) {
+      return;
+    }
+    const updated = { ...current, ...patch };
+    this.playEvents.update(id, patch).pipe(
+      switchMap(() => this.applyBattingDelta(game, current, -1)),
+      switchMap(() => this.applyBattingDelta(game, updated)),
+      switchMap(() => this.applyRunsAt(game, current.inning, -current.runsScored)),
+      switchMap((updatedGame) => this.applyRunsAt(updatedGame, updated.inning, updated.runsScored)),
+    ).subscribe({
+      next: (updatedGame) => {
+        this.playsState.update((plays) => plays.map((play) => play.id === id ? updated : play));
+        this.gameState.set(updatedGame);
+        this.notifications.success('Jugada actualizada.');
+      },
+      error: (error: unknown) => this.notifications.error(error),
+    });
+  }
+
   addOpponentRuns(runs: number): void {
     const game = this.gameState();
     if (!game || runs === 0) {
@@ -196,6 +222,14 @@ export class GameDayFacade {
         next: (updated) => this.gameState.set(updated),
         error: (error: unknown) => this.notifications.error(error),
       });
+  }
+
+  setTeamRuns(inning: number, runs: number): void {
+    this.updateLineScore('team', inning, runs);
+  }
+
+  setOpponentRuns(inning: number, runs: number): void {
+    this.updateLineScore('opponent', inning, runs);
   }
 
   finalize(): void {
@@ -222,12 +256,33 @@ export class GameDayFacade {
       });
   }
 
+  private updateLineScore(side: 'team' | 'opponent', inning: number, runs: number): void {
+    const game = this.gameState();
+    if (!game || inning < 1 || !Number.isFinite(runs)) {
+      return;
+    }
+    const line = [...(side === 'team' ? game.teamLineScore : game.opponentLineScore)];
+    line[inning - 1] = Math.max(0, Math.floor(runs));
+    const total = line.reduce((sum, value) => sum + value, 0);
+    const patch = side === 'team'
+      ? { teamLineScore: line, teamScore: total }
+      : { opponentLineScore: line, opponentScore: total };
+    this.games.update(game.id, patch).subscribe({
+      next: (updated) => this.gameState.set(updated),
+      error: (error: unknown) => this.notifications.error(error),
+    });
+  }
+
   private applyRuns(game: Game, runs: number): Observable<Game> {
+    return this.applyRunsAt(game, this.inning(), runs);
+  }
+
+  private applyRunsAt(game: Game, inning: number, runs: number): Observable<Game> {
     if (runs === 0) {
       return of(game);
     }
     const line = [...game.teamLineScore];
-    const index = this.inning() - 1;
+    const index = inning - 1;
     line[index] = Math.max(0, (line[index] ?? 0) + runs);
     const total = line.reduce((sum, value) => sum + value, 0);
     return this.games.update(game.id, {

@@ -4,9 +4,12 @@ import { SeasonContextService } from '../../core/context/season-context.service'
 import { TeamContextService } from '../../core/context/team-context.service';
 import { toAppError } from '../../core/errors/app-error';
 import {
-  BattingStatLine, FieldingStatLine, PitchingStatLine, StatGroup, TeamStatLine,
+  BattingStatLine, FieldingStatLine, PitchingStatLine, StatGroup, TeamStatLine, UpdateDto,
 } from '../../data/models';
-import { STATS_QUERY_REPOSITORY } from '../../data/repositories/abstract/tokens';
+import {
+  BATTING_STAT_REPOSITORY, FIELDING_STAT_REPOSITORY, PITCHING_STAT_REPOSITORY,
+  STATS_QUERY_REPOSITORY,
+} from '../../data/repositories/abstract/tokens';
 import { DatabaseService } from '../../data/storage/database.service';
 import { LatestRequest } from '../../shared/utils/latest-request';
 
@@ -17,6 +20,9 @@ import { LatestRequest } from '../../shared/utils/latest-request';
 @Injectable({ providedIn: 'root' })
 export class StatsFacade {
   private readonly statsQuery = inject(STATS_QUERY_REPOSITORY);
+  private readonly battingRepository = inject(BATTING_STAT_REPOSITORY);
+  private readonly pitchingRepository = inject(PITCHING_STAT_REPOSITORY);
+  private readonly fieldingRepository = inject(FIELDING_STAT_REPOSITORY);
   private readonly teamContext = inject(TeamContextService);
   private readonly seasonContext = inject(SeasonContextService);
   private readonly database = inject(DatabaseService);
@@ -91,6 +97,18 @@ export class StatsFacade {
 
   gameBoxScore(gameId: string, group: StatGroup) {
     return this.statsQuery.gameBoxScore(this.teamContext.requireTeamId(), gameId, group);
+  }
+
+  updateBatting(id: string, patch: UpdateDto<BattingStatLine>): Observable<BattingStatLine> {
+    return this.battingRepository.update(id, patch);
+  }
+
+  updatePitching(id: string, patch: UpdateDto<PitchingStatLine>): Observable<PitchingStatLine> {
+    return this.pitchingRepository.update(id, patch);
+  }
+
+  updateFielding(id: string, patch: UpdateDto<FieldingStatLine>): Observable<FieldingStatLine> {
+    return this.fieldingRepository.update(id, patch);
   }
 
   private scopedQuery<T>(

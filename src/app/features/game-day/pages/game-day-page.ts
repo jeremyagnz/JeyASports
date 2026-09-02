@@ -13,6 +13,8 @@ import { GamesFacade } from '../../games/games.facade';
 import { PlayersFacade } from '../../players/players.facade';
 import { PermissionService } from '../../../core/services/permission.service';
 import { LineupBuilder } from '../components/lineup-builder';
+import { PlayEditDialog } from '../components/play-edit-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { GameDayFacade } from '../game-day.facade';
 
 @Component({
@@ -31,6 +33,7 @@ export class GameDayPage {
   readonly players = inject(PlayersFacade);
   readonly gamesFacade = inject(GamesFacade);
   readonly permissions = inject(PermissionService);
+  private readonly dialog = inject(MatDialog);
 
   readonly id = input.required<string>();
 
@@ -95,5 +98,16 @@ export class GameDayPage {
 
   toNumber(event: Event): number {
     return Number((event.target as HTMLInputElement).value) || 0;
+  }
+
+  editPlay(play: import('../../../data/models').PlayEvent): void {
+    if (!this.permissions.canManageStats()) {
+      return;
+    }
+    this.dialog.open(PlayEditDialog, { data: play }).afterClosed().subscribe((patch) => {
+      if (patch) {
+        this.facade.updatePlay(play.id, patch);
+      }
+    });
   }
 }

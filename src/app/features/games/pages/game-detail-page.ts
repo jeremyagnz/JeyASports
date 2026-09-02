@@ -3,11 +3,12 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialog } from '@angular/material/dialog';
 import { RouterLink } from '@angular/router';
 import { catchError, combineLatest, of, switchMap } from 'rxjs';
 import { PermissionService } from '../../../core/services/permission.service';
 import {
-  BattingStatLine, FieldingStatLine, Game, PitchingStatLine,
+  BattingStatLine, FieldingStatLine, Game, PitchingStatLine, UpdateDto,
 } from '../../../data/models';
 import { EmptyState } from '../../../shared/ui/empty-state';
 import { StatTable } from '../../../shared/ui/stat-table';
@@ -17,6 +18,7 @@ import {
   battingColumns, fieldingColumns, pitchingColumns,
 } from '../../stats/stat-columns';
 import { StatsFacade } from '../../stats/stats.facade';
+import { StatEditDialog } from '../../stats/components/stat-edit-dialog';
 import { GamesFacade } from '../games.facade';
 
 @Component({
@@ -33,6 +35,7 @@ export class GameDetailPage {
   readonly permissions = inject(PermissionService);
   private readonly statsFacade = inject(StatsFacade);
   private readonly playersFacade = inject(PlayersFacade);
+  private readonly dialog = inject(MatDialog);
 
   readonly id = input.required<string>();
 
@@ -90,6 +93,29 @@ export class GameDetailPage {
 
   formatDate(value: string): string {
     return formatLongDate(value);
+  }
+
+  editStats(
+    group: 'batting' | 'pitching' | 'fielding',
+    row: BattingStatLine | PitchingStatLine | FieldingStatLine,
+  ): void {
+    if (!this.permissions.canManageStats()) {
+      return;
+    }
+    this.dialog.open(StatEditDialog, {
+      data: { group, row: row as unknown as Record<string, unknown> },
+    }).afterClosed().subscribe((patch) => {
+      if (!patch) {
+        return;
+      }
+      if (group === 'batting') {
+        this.statsFacade.updateBatting(row.id, patch as UpdateDto<BattingStatLine>).subscribe();
+      } else if (group === 'pitching') {
+        this.statsFacade.updatePitching(row.id, patch as UpdateDto<PitchingStatLine>).subscribe();
+      } else {
+        this.statsFacade.updateFielding(row.id, patch as UpdateDto<FieldingStatLine>).subscribe();
+      }
+    });
   }
 
   venueName(game: Game): string {

@@ -37,7 +37,7 @@ export class LineupBuilder {
       return current;
     }
     const entries = [...this.entries()].sort((a, b) => a.battingOrder - b.battingOrder);
-    return Array.from({ length: this.slots() }, (_, index) => {
+    return Array.from({ length: Math.max(this.slots(), entries.length) }, (_, index) => {
       const entry = entries[index];
       return {
         battingOrder: index + 1,
