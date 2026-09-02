@@ -49,6 +49,15 @@
           }
         </div>
         <div class="game-row__actions">
+          <a
+            matIconButton
+            matTooltip="Ver detalle"
+            [routerLink]="['/app/games', game.id]"
+            (click)="$event.stopPropagation()"
+            [attr.aria-label]="'Ver detalle de ' + facade.describe(game)"
+          >
+            <mat-icon>open_in_new</mat-icon>
+          </a>
           @if (permissions.canManageGames()) {
             <a
               matIconButton
