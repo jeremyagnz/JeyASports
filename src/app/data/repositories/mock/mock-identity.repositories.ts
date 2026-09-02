@@ -33,6 +33,15 @@ export class MockUserRepository implements UserRepository {
   list(): Observable<readonly User[]> {
     return simulate(() => this.database.select('users'));
   }
+
+  create(dto: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Observable<User> {
+    return simulate(() => {
+      const now = new Date().toISOString();
+      const user: User = { ...dto, id: createId('user'), createdAt: now, updatedAt: now };
+      this.database.replace('users', [...this.database.select('users'), user]);
+      return user;
+    });
+  }
 }
 
 @Injectable()

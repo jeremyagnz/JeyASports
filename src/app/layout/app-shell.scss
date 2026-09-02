@@ -67,10 +67,13 @@
 
 .shell__content {
   background: var(--app-color-surface-sunken);
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .shell__page {
   max-width: var(--app-shell-max-width);
+  min-width: 0;
   margin: 0 auto;
   padding: var(--app-space-6) var(--app-space-4) var(--app-space-8);
 }

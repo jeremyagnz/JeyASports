@@ -36,7 +36,7 @@ export class MembersPage {
       if (!result) {
         return;
       }
-      this.facade.addMember(result.email, result.role).subscribe({
+      this.facade.addMember(result.displayName, result.email, result.role).subscribe({
         next: () => this.facade.notifySuccess('Miembro agregado al equipo.'),
         error: (error: unknown) => this.facade.notifyError(error),
       });

@@ -48,24 +48,22 @@ export class AdministrationFacade {
     return this.memberships.remove(membershipId);
   }
 
-  addMember(email: string, role: TeamRole): Observable<TeamMembership> {
+  addMember(displayName: string, email: string, role: TeamRole): Observable<TeamMembership> {
     const teamId = this.teamContext.requireTeamId();
     return this.users.findByEmail(email).pipe(
-      switchMap((user) => {
-        if (!user) {
-          return throwError(() => new Error('No existe un usuario con ese correo.'));
-        }
-        if (this.membersState().some((member) => member.membership.userId === user.id)) {
-          return throwError(() => new Error('Este usuario ya pertenece al equipo.'));
-        }
-        return this.memberships.create({
+      switchMap((existing) => existing
+        ? this.memberships.create({
+          userId: existing.id, teamId, role, status: 'ACTIVE', joinedAt: new Date().toISOString(),
+        })
+        : this.users.create({ displayName, email, avatarUrl: undefined }).pipe(
+          switchMap((user) => this.memberships.create({
           userId: user.id,
           teamId,
           role,
           status: 'ACTIVE',
           joinedAt: new Date().toISOString(),
-        });
-      }),
+          })),
+        )),
     );
   }
 

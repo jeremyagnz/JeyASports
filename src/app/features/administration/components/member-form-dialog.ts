@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { TeamRole } from '../../../data/models';
 
 export interface MemberFormResult {
+  readonly displayName: string;
   readonly email: string;
   readonly role: TeamRole;
 }
@@ -20,9 +21,13 @@ export interface MemberFormResult {
     MatSelectModule,
   ],
   template: `
-    <h2 mat-dialog-title>Agregar administrador</h2>
+    <h2 mat-dialog-title>Agregar miembro</h2>
     <mat-dialog-content>
       <form [formGroup]="form">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="displayName" />
+        </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Correo electrónico</mat-label>
           <input matInput type="email" formControlName="email" />
@@ -54,6 +59,7 @@ export class MemberFormDialog {
   readonly roles = this.data.roles;
 
   readonly form = this.formBuilder.nonNullable.group({
+    displayName: ['', [Validators.required, Validators.maxLength(80)]],
     email: ['', [Validators.required, Validators.email]],
     role: ['ADMIN' as TeamRole, Validators.required],
   });

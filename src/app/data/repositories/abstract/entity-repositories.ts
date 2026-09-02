@@ -9,6 +9,7 @@ export interface UserRepository {
   getById(id: string): Observable<User>;
   findByEmail(email: string): Observable<User | null>;
   list(): Observable<readonly User[]>;
+  create(dto: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Observable<User>;
 }
 
 export interface TeamRepository {
